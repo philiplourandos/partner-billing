@@ -1,6 +1,15 @@
-apply plugin: "java"
+apply plugin: 'java'
+apply plugin: 'maven'
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 dependencies {
-    compile: 'org.springframework.batch:spring-batch-core:3.0.5.RELEASE'
-    compile: 'org.apache.commons.logging:log4j2-api:2.4'
+    compile 'org.springframework.batch:spring-batch-core:3.0.5.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter-batch:1.2.6.RELEASE'
+    compile 'org.apache.logging.log4j:log4j-api:2.4'
 }
