@@ -7,7 +7,7 @@ import java.util.Date;
  * @author plourand
  */
 public class Cdr {
-    private Date calldate;
+    private Date callDate;
 	private String clid;
 	private String src;
 	private String dst;
@@ -28,12 +28,12 @@ public class Cdr {
     public Cdr() {
     }
 
-    public Date getCalldate() {
-        return calldate;
+    public Date getCallDate() {
+        return callDate;
     }
 
-    public void setCalldate(Date calldate) {
-        this.calldate = calldate;
+    public void setCallDate(Date callDate) {
+        this.callDate = callDate;
     }
 
     public String getClid() {
