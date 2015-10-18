@@ -11,5 +11,8 @@ targetCompatibility = 1.8
 dependencies {
     compile 'org.springframework.batch:spring-batch-core:3.0.5.RELEASE'
     compile 'org.springframework.boot:spring-boot-starter-batch:1.2.6.RELEASE'
-    compile 'org.apache.logging.log4j:log4j-api:2.4'
+    compile 'org.apache.logging.log4j:log4j-api:2.4.1'
+    compile 'com.zaxxer:HikariCP:2.4.1'
+    compile 'org.mariadb.jdbc:mariadb-java-client:1.2.3'
+    testCompile 'junit:junit:4.12'    
 }
