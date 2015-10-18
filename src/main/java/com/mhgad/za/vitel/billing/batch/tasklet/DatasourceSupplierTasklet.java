@@ -73,4 +73,8 @@ public class DatasourceSupplierTasklet implements Tasklet, InitializingBean {
 
         LOG.info("Loaded {} datasources", datasources.size());
     }
+
+    public Queue<DataSource> getDatasources() {
+        return datasources;
+    }
 }
