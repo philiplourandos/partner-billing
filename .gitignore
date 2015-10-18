@@ -11,21 +11,5 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 /build/
-/.gradle/2.4/taskArtifacts/fileHashes.bin
-/.gradle/2.4/taskArtifacts/fileSnapshots.bin
-/.gradle/2.4/taskArtifacts/cache.properties.lock
-/.gradle/2.4/taskArtifacts/cache.properties
-/.gradle/2.4/taskArtifacts/outputFileStates.bin
-/.gradle/2.4/taskArtifacts/taskArtifacts.bin
+/.gradle/**/*
 /.nb-gradle/
-/.gradle/2.0/taskArtifacts/taskArtifacts.bin
-/.gradle/2.3/taskArtifacts/cache.properties
-/.gradle/2.3/taskArtifacts/cache.properties.lock
-/.gradle/2.3/taskArtifacts/fileHashes.bin
-/.gradle/2.3/taskArtifacts/outputFileStates.bin
-/.gradle/2.0/taskArtifacts/cache.properties.lock
-/.gradle/2.0/taskArtifacts/cache.properties
-/.gradle/2.3/taskArtifacts/taskArtifacts.bin
-/.gradle/2.0/taskArtifacts/fileHashes.bin
-/.gradle/2.0/taskArtifacts/fileSnapshots.bin
-/.gradle/2.0/taskArtifacts/outputFileStates.bin
