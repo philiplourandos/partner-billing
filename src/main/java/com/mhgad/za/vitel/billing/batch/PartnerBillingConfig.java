@@ -1,5 +1,8 @@
 package com.mhgad.za.vitel.billing.batch;
 
+import com.mhgad.za.vitel.billing.batch.decision.NextDatasourceDecision;
+import com.mhgad.za.vitel.billing.batch.model.Cdr;
+import com.mhgad.za.vitel.billing.batch.tasklet.DatasourceSupplierTasklet;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.text.SimpleDateFormat;
@@ -7,7 +10,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.flow.FlowExecutionStatus;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
@@ -38,6 +47,12 @@ public class PartnerBillingConfig {
     @Autowired
     private AppProps props;
 
+    @Autowired
+    private DatasourceSupplierTasklet dsSupplier;
+
+    @Autowired
+    private NextDatasourceDecision dsDecision;
+    
     @Bean
     public DataSource partnerBillingDs() {
         final HikariConfig cfg = new HikariConfig();
@@ -89,5 +104,22 @@ public class PartnerBillingConfig {
         writer.setSql(SqlConst.WRITE_CDR_QUERY);
 
         return writer;
+    }
+
+    @Bean
+    public Job createJob(StepBuilderFactory stepBuilderFactory, JobBuilderFactory jobs) throws Exception {
+        Step getDatasource = stepBuilderFactory.get("getDatasource").tasklet(dsSupplier).build();
+        Step retrieveCdrs = stepBuilderFactory.get("stepRetrieveCdrs")
+                .<Cdr, Cdr>chunk(appProps.getChunkSize())
+                .reader(cdrReader())
+                .writer(cdrWriter()).build();
+        
+        return jobs.get("partner-billing").incrementer(new RunIdIncrementer())
+                .start(getDatasource)
+                .next(retrieveCdrs)
+                .next(dsDecision)
+                .on(PartnerBillingConst.STATUS_CONTINUE)
+                .to(getDatasource)
+                .end().build();
     }
 }
