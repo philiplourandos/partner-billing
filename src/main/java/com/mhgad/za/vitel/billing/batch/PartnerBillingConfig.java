@@ -22,6 +22,7 @@ import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -120,5 +121,10 @@ public class PartnerBillingConfig {
                 .on(PartnerBillingConst.STATUS_CONTINUE)
                 .to(getDatasource)
                 .end().build();
+    }
+    
+    @Bean
+    public PropertyPlaceholderConfigurer propPlaceholder() {
+        return new PropertyPlaceholderConfigurer();
     }
 }
