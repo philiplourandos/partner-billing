@@ -2,7 +2,7 @@ package com.mhgad.za.vitel.billing.batch.tasklet;
 
 import com.mhgad.za.vitel.billing.batch.AppProps;
 import com.mhgad.za.vitel.billing.batch.model.DbServer;
-import com.mhgad.za.vitel.billing.batch.repo.DbServersRepo;
+import com.mhgad.za.vitel.billing.batch.repo.PartnerBillingRepo;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.util.LinkedList;
@@ -32,7 +32,7 @@ public class DatasourceSupplierTasklet implements Tasklet, InitializingBean {
     private final Queue<DataSource> datasources;
     
     @Autowired
-    private DbServersRepo dbServersRepo;
+    private PartnerBillingRepo dbServersRepo;
 
     @Autowired
     private JdbcPagingItemReader cdrReader;
