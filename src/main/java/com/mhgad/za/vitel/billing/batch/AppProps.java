@@ -9,6 +9,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class AppProps {
+    @Value("${cdr.start.date}")
+    private String startDate;
+    @Value("${cdr.end.date}")
+    private String endDate;
+    
     @Value("${fetch.size}")
     private Integer fetchSize;
     @Value("${chunk.size}")
@@ -74,6 +79,12 @@ public class AppProps {
     public String getPartnerBillingPassword() {
         return partnerBillingPassword;
     }
-    
-    
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
 }
