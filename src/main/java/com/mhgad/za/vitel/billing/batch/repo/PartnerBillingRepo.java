@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
  * @author plourand
  */
 @Repository
-public class DbServersRepo {
+public class PartnerBillingRepo {
     private static final String FIND_ALL_SERVER =
             "   SELECT "
             + "     dbs.id,"
@@ -25,7 +25,7 @@ public class DbServersRepo {
     @Autowired
     private JdbcOperations ops;
 
-    public DbServersRepo() {
+    public PartnerBillingRepo() {
     }
 
     public List<DbServer> findAllServers() {
