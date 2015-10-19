@@ -1,6 +1,10 @@
 apply plugin: 'java'
 apply plugin: 'maven'
 
+plugins {
+    id "org.flywaydb.flyway" version "3.2.1"
+}
+
 repositories {
     mavenCentral()
 }
