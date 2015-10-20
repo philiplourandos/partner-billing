@@ -1,6 +1,7 @@
 package com.mhgad.za.vitel.billing.batch.tasklet;
 
 import com.mhgad.za.vitel.billing.batch.AppProps;
+import com.mhgad.za.vitel.billing.batch.PartnerBillingConfig;
 import com.mhgad.za.vitel.billing.batch.model.DbServer;
 import com.mhgad.za.vitel.billing.batch.repo.PartnerBillingRepo;
 import com.zaxxer.hikari.HikariConfig;
@@ -15,6 +16,7 @@ import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
+import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,9 @@ public class DatasourceSupplierTasklet implements Tasklet, InitializingBean {
     @Autowired
     private AppProps props;
     
+    @Autowired
+    private PartnerBillingConfig cfg;
+    
     public DatasourceSupplierTasklet() {
         datasources = new LinkedList<>();
     }
@@ -48,6 +53,10 @@ public class DatasourceSupplierTasklet implements Tasklet, InitializingBean {
     public RepeatStatus execute(StepContribution sc, ChunkContext cc) throws Exception {
         DataSource next = datasources.poll();
 
+        SqlPagingQueryProviderFactoryBean sqlPagingQuery = cfg.createPagingQuery();
+        sqlPagingQuery.setDataSource(next);
+
+        cdrReader.setQueryProvider(sqlPagingQuery.getObject());
         cdrReader.setDataSource(next);
 
         return RepeatStatus.FINISHED;
@@ -62,6 +71,7 @@ public class DatasourceSupplierTasklet implements Tasklet, InitializingBean {
             cfg.setJdbcUrl(currentServer.getUrl());
             cfg.setUsername(currentServer.getUsername());
             cfg.setPassword(currentServer.getPassword());
+            cfg.setCatalog(currentServer.getCatalog());
             cfg.addDataSourceProperty("cachePrepStmts", props.getCachePrepStatements());
             cfg.addDataSourceProperty("prepStmtCacheSize", props.getPrepStatementCacheSize());
             cfg.addDataSourceProperty("prepStmtCacheSqlLimit", props.getPrepStatementCacheSqlLimit());
