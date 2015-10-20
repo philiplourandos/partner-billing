@@ -22,7 +22,7 @@ public class TestConfiguration {
                 .setType(EmbeddedDatabaseType.H2)
                 .setScriptEncoding("UTF-8")
                 .addScript("test-db.sql")
-                .setName("partnerbilling")
+                .setName("test")
                 .build();
 
         return ds;
