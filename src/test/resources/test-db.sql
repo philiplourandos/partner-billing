@@ -1,29 +1,19 @@
-CREATE SCHEMA partnerbilling;
 CREATE SCHEMA cdrjhb;
 CREATE SCHEMA cdrcpt;
 CREATE SCHEMA cdrdurb;
-
-CREATE TABLE partnerbilling.db_servers(
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    jdbc_url varchar(200) NOT NULL,
-    jdbc_username varchar(50) NOT NULL,
-    jdbc_password varchar(50) NOT NULL
-);
-CREATE TABLE partnerbilling.cdr (calldate datetime DEFAULT '2000-00-00 00:00:00' NOT NULL, clid varchar(80) NOT NULL, src varchar(80) NOT NULL, dst varchar(80) NOT NULL, dcontext varchar(80) NOT NULL, channel varchar(80) NOT NULL, dstchannel varchar(80) NOT NULL, lastapp varchar(80) NOT NULL, lastdata varchar(80) NOT NULL, duration int DEFAULT '0' NOT NULL, billsec int DEFAULT '0' NOT NULL, disposition varchar(45) NOT NULL, amaflags int DEFAULT '0' NOT NULL, accountcode varchar(20) NOT NULL, uniqueid varchar(32) NOT NULL, userfield varchar(255) NOT NULL, cost varchar(10), site_id int, id int(10) NOT NULL AUTO_INCREMENT, PRIMARY KEY (id));
-CREATE TABLE partnerbilling.cdr_query (id int NOT NULL AUTO_INCREMENT, site_id int, query text, active bit, created datetime, partner_id varchar(25), PRIMARY KEY (id));
-CREATE TABLE partnerbilling.discipline_group (id int NOT NULL AUTO_INCREMENT, name varchar(25), description varchar(25), site_id int, group_id int, PRIMARY KEY (id));
-CREATE TABLE partnerbilling.partner (id int NOT NULL AUTO_INCREMENT, site_id int, name varchar(25), description varchar(50), accountcode int, group_id int, discipline_id int, PRIMARY KEY (id));
-CREATE TABLE partnerbilling.partner_group (id int NOT NULL AUTO_INCREMENT, name varchar(25), description varchar(50), site_id int, PRIMARY KEY (id));
-CREATE TABLE partnerbilling.site (id int NOT NULL AUTO_INCREMENT, name varchar(25), description varchar(50), PRIMARY KEY (id));
-
+CREATE TABLE db_servers(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, jdbc_url varchar(200) NOT NULL, jdbc_username varchar(50) NOT NULL, jdbc_password varchar(50) NOT NULL, jdbc_catalog varchar(50) NOT NULL);
+CREATE TABLE cdr (calldate datetime DEFAULT '2000-00-00 00:00:00' NOT NULL, clid varchar(80) NOT NULL, src varchar(80) NOT NULL, dst varchar(80) NOT NULL, dcontext varchar(80) NOT NULL, channel varchar(80) NOT NULL, dstchannel varchar(80) NOT NULL, lastapp varchar(80) NOT NULL, lastdata varchar(80) NOT NULL, duration int DEFAULT '0' NOT NULL, billsec int DEFAULT '0' NOT NULL, disposition varchar(45) NOT NULL, amaflags int DEFAULT '0' NOT NULL, accountcode varchar(20) NOT NULL, uniqueid varchar(32) NOT NULL, userfield varchar(255) NOT NULL, cost varchar(10), site_id int, id int(10) NOT NULL AUTO_INCREMENT, PRIMARY KEY (id));
+CREATE TABLE cdr_query (id int NOT NULL AUTO_INCREMENT, site_id int, query text, active bit, created datetime, partner_id varchar(25), PRIMARY KEY (id));
+CREATE TABLE discipline_group (id int NOT NULL AUTO_INCREMENT, name varchar(25), description varchar(25), site_id int, group_id int, PRIMARY KEY (id));
+CREATE TABLE partner (id int NOT NULL AUTO_INCREMENT, site_id int, name varchar(25), description varchar(50), accountcode int, group_id int, discipline_id int, PRIMARY KEY (id));
+CREATE TABLE partner_group (id int NOT NULL AUTO_INCREMENT, name varchar(25), description varchar(50), site_id int, PRIMARY KEY (id));
+CREATE TABLE site (id int NOT NULL AUTO_INCREMENT, name varchar(25), description varchar(50), PRIMARY KEY (id));
 CREATE TABLE cdrjhb.cdr (calldate datetime DEFAULT '0000-00-00 00:00:00' NOT NULL, clid varchar(80) NOT NULL, src varchar(80) NOT NULL, dst varchar(80) NOT NULL, dcontext varchar(80) NOT NULL, channel varchar(80) NOT NULL, dstchannel varchar(80) NOT NULL, lastapp varchar(80) NOT NULL, lastdata varchar(80) NOT NULL, duration int DEFAULT '0' NOT NULL, billsec int DEFAULT '0' NOT NULL, disposition varchar(45) NOT NULL, amaflags int DEFAULT '0' NOT NULL, accountcode varchar(20) NOT NULL, uniqueid varchar(32) NOT NULL, userfield varchar(255) NOT NULL, cost varchar(10), site_id int, id int(10) NOT NULL AUTO_INCREMENT, PRIMARY KEY (id));
 CREATE TABLE cdrcpt.cdr (calldate datetime DEFAULT '0000-00-00 00:00:00' NOT NULL, clid varchar(80) NOT NULL, src varchar(80) NOT NULL, dst varchar(80) NOT NULL, dcontext varchar(80) NOT NULL, channel varchar(80) NOT NULL, dstchannel varchar(80) NOT NULL, lastapp varchar(80) NOT NULL, lastdata varchar(80) NOT NULL, duration int DEFAULT '0' NOT NULL, billsec int DEFAULT '0' NOT NULL, disposition varchar(45) NOT NULL, amaflags int DEFAULT '0' NOT NULL, accountcode varchar(20) NOT NULL, uniqueid varchar(32) NOT NULL, userfield varchar(255) NOT NULL, cost varchar(10), site_id int, id int(10) NOT NULL AUTO_INCREMENT, PRIMARY KEY (id));
 CREATE TABLE cdrdurb.cdr (calldate datetime DEFAULT '0000-00-00 00:00:00' NOT NULL, clid varchar(80) NOT NULL, src varchar(80) NOT NULL, dst varchar(80) NOT NULL, dcontext varchar(80) NOT NULL, channel varchar(80) NOT NULL, dstchannel varchar(80) NOT NULL, lastapp varchar(80) NOT NULL, lastdata varchar(80) NOT NULL, duration int DEFAULT '0' NOT NULL, billsec int DEFAULT '0' NOT NULL, disposition varchar(45) NOT NULL, amaflags int DEFAULT '0' NOT NULL, accountcode varchar(20) NOT NULL, uniqueid varchar(32) NOT NULL, userfield varchar(255) NOT NULL, cost varchar(10), site_id int, id int(10) NOT NULL AUTO_INCREMENT, PRIMARY KEY (id));
-
-INSERT INTO partnerbilling.db_servers(jdbc_url, jdbc_username, jdbc_password) VALUES('jdbc:h2:~/cdrjhb', 'sa', '');
-INSERT INTO partnerbilling.db_servers(jdbc_url, jdbc_username, jdbc_password) VALUES('jdbc:h2:~/cdrcpt', 'sa', '');
-INSERT INTO partnerbilling.db_servers(jdbc_url, jdbc_username, jdbc_password) VALUES('jdbc:h2:~/cdrdurb', 'sa', '');
-
+INSERT INTO db_servers(jdbc_url, jdbc_username, jdbc_password, jdbc_catalog) VALUES('jdbc:h2:mem:test', 'sa', '', 'cdrjhb');
+INSERT INTO db_servers(jdbc_url, jdbc_username, jdbc_password, jdbc_catalog) VALUES('jdbc:h2:mem:test', 'sa', '', 'cdrcpt');
+INSERT INTO db_servers(jdbc_url, jdbc_username, jdbc_password, jdbc_catalog) VALUES('jdbc:h2:mem:test', 'sa', '', 'cdrdurb');
 INSERT INTO cdrjhb.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel, lastapp, lastdata, duration, billsec, disposition, amaflags, accountcode, uniqueid, userfield, cost, site_id, id) VALUES ('2015-10-07 13:23:49', '0848000887', '0848000887', 'europassist', 'outbound-europassist', 'Zap/40-1', 'IAX2/jhblvgw05_is_voip_out-29085', 'Dial', 'IAX2/jhblvgw05_is_voip_out/0119918007', 77, 33, 'ANSWERED', 3, '25', '1444217029.302676', 'IVR_EUROPASSIST_ENG_MHVOIS', null, 2, 12049969);
 INSERT INTO cdrjhb.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel, lastapp, lastdata, duration, billsec, disposition, amaflags, accountcode, uniqueid, userfield, cost, site_id, id) VALUES ('2015-10-07 13:44:33', '0785211425', '0785211425', 'europassist', 'outbound-europassist', 'Zap/71-1', 'IAX2/jhblvgw05_is_voip_out-26572', 'Dial', 'IAX2/jhblvgw05_is_voip_out/0119918007', 246, 211, 'ANSWERED', 3, '25', '1444218273.303031', 'IVR_EUROPASSIST_ENG_MHVOIS', null, 2, 12049970);
 INSERT INTO cdrjhb.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel, lastapp, lastdata, duration, billsec, disposition, amaflags, accountcode, uniqueid, userfield, cost, site_id, id) VALUES ('2015-10-07 13:45:32', '0794209962', '0794209962', 'europassist', 'outbound-europassist', 'Zap/9-1', 'IAX2/jhblvgw05_is_voip_out-17332', 'Dial', 'IAX2/jhblvgw05_is_voip_out/0119918007', 73, 22, 'ANSWERED', 3, '25', '1444218332.303047', 'IVR_EUROPASSIST_ENG_MHVOIS', null, 2, 12049971);
@@ -44,7 +34,6 @@ INSERT INTO cdrjhb.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel,
 INSERT INTO cdrjhb.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel, lastapp, lastdata, duration, billsec, disposition, amaflags, accountcode, uniqueid, userfield, cost, site_id, id) VALUES ('2015-10-07 15:48:49', '0849354439', '0849354439', 'europassist', 'outbound-europassist', 'Zap/68-1', 'IAX2/jhblvgw05_is_voip_out-31840', 'Dial', 'IAX2/jhblvgw05_is_voip_out/0119918007', 152, 101, 'ANSWERED', 3, '25', '1444225729.305368', 'IVR_EUROPASSIST_ENG_MHVOIS', null, 2, 12049986);
 INSERT INTO cdrjhb.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel, lastapp, lastdata, duration, billsec, disposition, amaflags, accountcode, uniqueid, userfield, cost, site_id, id) VALUES ('2015-10-07 15:50:26', '0607241847', '0607241847', 'europassist', 'outbound-europassist', 'Zap/44-1', 'IAX2/jhblvgw05_is_voip_out-22877', 'Dial', 'IAX2/jhblvgw05_is_voip_out/0119918007', 92, 43, 'ANSWERED', 3, '25', '1444225826.305388', 'IVR_EUROPASSIST_ENG_MHVOIS', null, 2, 12049987);
 INSERT INTO cdrjhb.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel, lastapp, lastdata, duration, billsec, disposition, amaflags, accountcode, uniqueid, userfield, cost, site_id, id) VALUES ('2015-10-07 15:59:34', '0735456813', '0735456813', 'europassist', 'outbound-europassist', 'Zap/82-1', 'IAX2/jhblvgw05_is_voip_out-28069', 'Dial', 'IAX2/jhblvgw05_is_voip_out/0119918007', 65, 34, 'ANSWERED', 3, '25', '1444226374.305533', 'IVR_EUROPASSIST_ENG_MHVOIS', null, 2, 12049988);
-
 INSERT INTO cdrcpt.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel, lastapp, lastdata, duration, billsec, disposition, amaflags, accountcode, uniqueid, userfield, cost, site_id, id) VALUES ('2015-10-07 08:11:52', '0137681113', '0137681113', 'benefit_networks', 'outbound-benefit_networks', 'Zap/24-1', 'IAX2/medscheme-15860', 'Dial', 'IAX2/medscheme/0214661977', 399, 203, 'ANSWERED', 3, '18', '1444198312.295369', 'IVR_BENEFIT_NETWORKS_ENG', null, 2, 12050778);
 INSERT INTO cdrcpt.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel, lastapp, lastdata, duration, billsec, disposition, amaflags, accountcode, uniqueid, userfield, cost, site_id, id) VALUES ('2015-10-07 08:12:53', '0436434395', '0436434395', 'benefit_networks', 'outbound-benefit_networks', 'Zap/42-1', 'IAX2/medscheme-11600', 'Dial', 'IAX2/medscheme/0214661977', 254, 146, 'ANSWERED', 3, '18', '1444198373.295399', 'IVR_BENEFIT_NETWORKS_SB_SP', null, 2, 12050779);
 INSERT INTO cdrcpt.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel, lastapp, lastdata, duration, billsec, disposition, amaflags, accountcode, uniqueid, userfield, cost, site_id, id) VALUES ('2015-10-07 08:18:40', '0873509884', '0873509884', 'benefit_networks', 'outbound-benefit_networks', 'Zap/30-1', 'IAX2/medscheme-2764', 'Dial', 'IAX2/medscheme/0214661977', 102, 61, 'ANSWERED', 3, '18', '1444198720.295512', 'IVR_BENEFIT_NETWORKS_ENG', null, 2, 12050780);
@@ -66,7 +55,6 @@ INSERT INTO cdrcpt.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel,
 INSERT INTO cdrcpt.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel, lastapp, lastdata, duration, billsec, disposition, amaflags, accountcode, uniqueid, userfield, cost, site_id, id) VALUES ('2015-10-07 09:15:41', '0117137702', '0117137702', 'benefit_networks', 'outbound-benefit_networks', 'Zap/15-1', 'IAX2/medscheme-7381', 'Dial', 'IAX2/medscheme/0214661977', 283, 227, 'ANSWERED', 3, '18', '1444202141.296856', 'IVR_BENEFIT_NETWORKS_SB_SP', null, 2, 12050796);
 INSERT INTO cdrcpt.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel, lastapp, lastdata, duration, billsec, disposition, amaflags, accountcode, uniqueid, userfield, cost, site_id, id) VALUES ('2015-10-07 09:30:53', '0358313429', '0358313429', 'benefit_networks', 'outbound-benefit_networks', 'Zap/3-1', 'IAX2/medscheme-4432', 'Dial', 'IAX2/medscheme/0214661977', 169, 133, 'ANSWERED', 3, '18', '1444203053.297242', 'IVR_BENEFIT_NETWORKS_SB_SP', null, 2, 12050797);
 INSERT INTO cdrcpt.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel, lastapp, lastdata, duration, billsec, disposition, amaflags, accountcode, uniqueid, userfield, cost, site_id, id) VALUES ('2015-10-07 09:38:21', '0159730329', '0159730329', 'benefit_networks', 'outbound-benefit_networks', 'Zap/28-1', 'IAX2/medscheme-3255', 'Dial', 'IAX2/medscheme/0214661977', 282, 241, 'ANSWERED', 3, '18', '1444203501.297435', 'IVR_BENEFIT_NETWORKS_SB_SP', null, 2, 12050798);
-
 INSERT INTO cdrdurb.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel, lastapp, lastdata, duration, billsec, disposition, amaflags, accountcode, uniqueid, userfield, cost, site_id, id) VALUES ('2015-10-07 08:35:26', '"0125293000" <0125293000>', '0125293000', 'benefit_networks', 'outbound-benefit_networks', 'SIP/VOIS-0002fe76', 'IAX2/medscheme-10387', 'Dial', 'IAX2/medscheme/0214661977', 209, 156, 'ANSWERED', 3, '18', '1444199726.565284', 'IVR_BENEFIT_NETWORKS_SB_SP', '0.49', 2, 12050908);
 INSERT INTO cdrdurb.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel, lastapp, lastdata, duration, billsec, disposition, amaflags, accountcode, uniqueid, userfield, cost, site_id, id) VALUES ('2015-10-07 08:37:39', '"0123160200" <0123160200>', '0123160200', 'benefit_networks', 'outbound-benefit_networks', 'SIP/JHBLEXT15-0002fe8f', 'IAX2/medscheme-9436', 'Dial', 'IAX2/medscheme/0214663457', 272, 270, 'ANSWERED', 3, '18', '1444199859.565360', 'AGENT_BENEFIT_NETWORKS_NDE', '0.86', 2, 12050909);
 INSERT INTO cdrdurb.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel, lastapp, lastdata, duration, billsec, disposition, amaflags, accountcode, uniqueid, userfield, cost, site_id, id) VALUES ('2015-10-07 08:42:41', '0318220450', '0318220450', 'benefit_networks', 'outbound-benefit_networks', 'Zap/87-1', 'IAX2/medscheme-6302', 'Dial', 'IAX2/medscheme/0214661977', 2225, 2124, 'ANSWERED', 3, '18', '1444200161.565604', 'IVR_BENEFIT_NETWORKS_ENG', null, 2, 12050910);
@@ -88,3 +76,85 @@ INSERT INTO cdrdurb.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel
 INSERT INTO cdrdurb.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel, lastapp, lastdata, duration, billsec, disposition, amaflags, accountcode, uniqueid, userfield, cost, site_id, id) VALUES ('2015-10-07 09:13:00', '0312014652', '0312014652', 'benefit_networks', 'outbound-benefit_networks', 'SIP/VOIS-000300e8', 'IAX2/medscheme-5679', 'Dial', 'IAX2/medscheme/0214661977', 735, 643, 'ANSWERED', 3, '18', '1444201980.566995', 'IVR_BENEFIT_NETWORKS_SB_SP', '2.04', 2, 12050926);
 INSERT INTO cdrdurb.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel, lastapp, lastdata, duration, billsec, disposition, amaflags, accountcode, uniqueid, userfield, cost, site_id, id) VALUES ('2015-10-07 09:18:29', '0213724514', '0213724514', 'benefit_networks', 'outbound-benefit_networks', 'SIP/VOIS-00030154', 'IAX2/medscheme-6826', 'Dial', 'IAX2/medscheme/0214661977', 154, 105, 'ANSWERED', 3, '18', '1444202309.567239', 'IVR_BENEFIT_NETWORKS_SB_SP', '0.33', 2, 12050927);
 INSERT INTO cdrdurb.cdr (calldate, clid, src, dst, dcontext, channel, dstchannel, lastapp, lastdata, duration, billsec, disposition, amaflags, accountcode, uniqueid, userfield, cost, site_id, id) VALUES ('2015-10-07 09:19:14', '0126546514', '0126546514', 'benefit_networks', 'outbound-benefit_networks', 'Zap/67-1', 'IAX2/medscheme-4424', 'Dial', 'IAX2/medscheme/0214663450', 378, 251, 'ANSWERED', 3, '18', '1444202354.567298', 'IVR_BENEFIT_NETWORKS_AFR', null, 2, 12050928);
+
+-- Autogenerated: do not edit this file
+
+CREATE TABLE BATCH_JOB_INSTANCE  (
+	JOB_INSTANCE_ID BIGINT IDENTITY NOT NULL PRIMARY KEY ,
+	VERSION BIGINT ,
+	JOB_NAME VARCHAR(100) NOT NULL,
+	JOB_KEY VARCHAR(32) NOT NULL,
+	constraint JOB_INST_UN unique (JOB_NAME, JOB_KEY)
+) ;
+
+CREATE TABLE BATCH_JOB_EXECUTION  (
+	JOB_EXECUTION_ID BIGINT IDENTITY NOT NULL PRIMARY KEY ,
+	VERSION BIGINT  ,
+	JOB_INSTANCE_ID BIGINT NOT NULL,
+	CREATE_TIME TIMESTAMP NOT NULL,
+	START_TIME TIMESTAMP DEFAULT NULL ,
+	END_TIME TIMESTAMP DEFAULT NULL ,
+	STATUS VARCHAR(10) ,
+	EXIT_CODE VARCHAR(2500) ,
+	EXIT_MESSAGE VARCHAR(2500) ,
+	LAST_UPDATED TIMESTAMP,
+	JOB_CONFIGURATION_LOCATION VARCHAR(2500) NULL,
+	constraint JOB_INST_EXEC_FK foreign key (JOB_INSTANCE_ID)
+	references BATCH_JOB_INSTANCE(JOB_INSTANCE_ID)
+) ;
+
+CREATE TABLE BATCH_JOB_EXECUTION_PARAMS  (
+	JOB_EXECUTION_ID BIGINT NOT NULL ,
+	TYPE_CD VARCHAR(6) NOT NULL ,
+	KEY_NAME VARCHAR(100) NOT NULL ,
+	STRING_VAL VARCHAR(250) ,
+	DATE_VAL TIMESTAMP DEFAULT NULL ,
+	LONG_VAL BIGINT ,
+	DOUBLE_VAL DOUBLE PRECISION ,
+	IDENTIFYING CHAR(1) NOT NULL ,
+	constraint JOB_EXEC_PARAMS_FK foreign key (JOB_EXECUTION_ID)
+	references BATCH_JOB_EXECUTION(JOB_EXECUTION_ID)
+) ;
+
+CREATE TABLE BATCH_STEP_EXECUTION  (
+	STEP_EXECUTION_ID BIGINT IDENTITY NOT NULL PRIMARY KEY ,
+	VERSION BIGINT NOT NULL,
+	STEP_NAME VARCHAR(100) NOT NULL,
+	JOB_EXECUTION_ID BIGINT NOT NULL,
+	START_TIME TIMESTAMP NOT NULL ,
+	END_TIME TIMESTAMP DEFAULT NULL ,
+	STATUS VARCHAR(10) ,
+	COMMIT_COUNT BIGINT ,
+	READ_COUNT BIGINT ,
+	FILTER_COUNT BIGINT ,
+	WRITE_COUNT BIGINT ,
+	READ_SKIP_COUNT BIGINT ,
+	WRITE_SKIP_COUNT BIGINT ,
+	PROCESS_SKIP_COUNT BIGINT ,
+	ROLLBACK_COUNT BIGINT ,
+	EXIT_CODE VARCHAR(2500) ,
+	EXIT_MESSAGE VARCHAR(2500) ,
+	LAST_UPDATED TIMESTAMP,
+	constraint JOB_EXEC_STEP_FK foreign key (JOB_EXECUTION_ID)
+	references BATCH_JOB_EXECUTION(JOB_EXECUTION_ID)
+) ;
+
+CREATE TABLE BATCH_STEP_EXECUTION_CONTEXT  (
+	STEP_EXECUTION_ID BIGINT NOT NULL PRIMARY KEY,
+	SHORT_CONTEXT VARCHAR(2500) NOT NULL,
+	SERIALIZED_CONTEXT LONGVARCHAR ,
+	constraint STEP_EXEC_CTX_FK foreign key (STEP_EXECUTION_ID)
+	references BATCH_STEP_EXECUTION(STEP_EXECUTION_ID)
+) ;
+
+CREATE TABLE BATCH_JOB_EXECUTION_CONTEXT  (
+	JOB_EXECUTION_ID BIGINT NOT NULL PRIMARY KEY,
+	SHORT_CONTEXT VARCHAR(2500) NOT NULL,
+	SERIALIZED_CONTEXT LONGVARCHAR ,
+	constraint JOB_EXEC_CTX_FK foreign key (JOB_EXECUTION_ID)
+	references BATCH_JOB_EXECUTION(JOB_EXECUTION_ID)
+) ;
+
+CREATE SEQUENCE BATCH_STEP_EXECUTION_SEQ;
+CREATE SEQUENCE BATCH_JOB_EXECUTION_SEQ;
+CREATE SEQUENCE BATCH_JOB_SEQ;
