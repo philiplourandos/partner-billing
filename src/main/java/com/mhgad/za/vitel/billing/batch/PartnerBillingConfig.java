@@ -1,6 +1,7 @@
 package com.mhgad.za.vitel.billing.batch;
 
 import com.mhgad.za.vitel.billing.batch.decision.NextDatasourceDecision;
+import com.mhgad.za.vitel.billing.batch.mapper.CdrMapper;
 import com.mhgad.za.vitel.billing.batch.model.Cdr;
 import com.mhgad.za.vitel.billing.batch.tasklet.DatasourceSupplierTasklet;
 import com.zaxxer.hikari.HikariConfig;
@@ -91,6 +92,7 @@ public class PartnerBillingConfig {
         reader.setQueryProvider(queryProvider.getObject());
         reader.setPageSize(appProps.getPagingSize());
         reader.setParameterValues(params);
+        reader.setRowMapper(new CdrMapper());
 
         return reader;
     }
