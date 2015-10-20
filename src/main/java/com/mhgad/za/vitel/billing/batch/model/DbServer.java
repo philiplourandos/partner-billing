@@ -9,6 +9,7 @@ public class DbServer {
     private String url;
     private String username;
     private String password;
+    private String catalog;
 
     public DbServer() {
     }
@@ -43,5 +44,13 @@ public class DbServer {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getCatalog() {
+        return catalog;
+    }
+
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
     }
 }
