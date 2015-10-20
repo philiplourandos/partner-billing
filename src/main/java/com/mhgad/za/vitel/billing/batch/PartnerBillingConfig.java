@@ -69,19 +69,13 @@ public class PartnerBillingConfig {
         return new JdbcTemplate(partnerBillingDs);
     }
 
-    public SqlPagingQueryProviderFactoryBean createPagingQuery() {
+    @Bean
+    public JdbcPagingItemReader cdrReader(DataSource partnerBillingDs) throws Exception {
         SqlPagingQueryProviderFactoryBean queryProvider = new SqlPagingQueryProviderFactoryBean();
         queryProvider.setSelectClause(SqlConst.RETRIEVE_CDR_RECORDS_SELECT);
         queryProvider.setFromClause(SqlConst.RETRIEVE_CDR_RECORDS_FROM);
         queryProvider.setWhereClause(SqlConst.RETRIEVE_CDR_RECORDS_WHERE);
         queryProvider.setSortKey("uniqueid");
-
-        return queryProvider;
-    }
-    
-    @Bean
-    public JdbcPagingItemReader cdrReader(DataSource partnerBillingDs) throws Exception {
-        SqlPagingQueryProviderFactoryBean queryProvider = createPagingQuery();
         queryProvider.setDataSource(partnerBillingDs);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -119,7 +113,7 @@ public class PartnerBillingConfig {
                 .<Cdr, Cdr>chunk(appProps.getChunkSize())
                 .reader(cdrReader(partnerBillingDs))
                 .writer(cdrWriter(partnerBillingDs)).build();
-        
+
         return jobs.get("partner-billing").incrementer(new RunIdIncrementer())
                 .start(getDatasource)
                 .next(retrieveCdrs)
