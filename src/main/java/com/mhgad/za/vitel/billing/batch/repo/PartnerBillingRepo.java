@@ -18,8 +18,7 @@ public class PartnerBillingRepo {
             + "     dbs.id,"
             + "     dbs.jdbc_url,"
             + "     dbs.jdbc_username,"
-            + "     dbs.jdbc_password,"
-            + "     dbs.jdbc_catalog "
+            + "     dbs.jdbc_password"
             + " FROM "
             + "     DB_SERVERS dbs";
 
