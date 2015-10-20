@@ -21,48 +21,43 @@ import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  *
  * @author plourand
  */
+@ComponentScan(basePackages = {"com.mhgad.za.vitel"})
 @Configuration
-@ComponentScan(basePackages = {"com.mhgad.za.vitel.billing.batch"})
 @EnableBatchProcessing
+@EnableAspectJAutoProxy
 public class PartnerBillingConfig {
 
     @Autowired
     private AppProps appProps;
-    @Value("#{systemProperties['start']}")
-    private String startDate;
-    @Value("#{systemProperties['end']}")
-    private String endDate;
-
-    @Autowired
-    private AppProps props;
 
     @Autowired
     private DatasourceSupplierTasklet dsSupplier;
 
     @Autowired
     private NextDatasourceDecision dsDecision;
-    
+
     @Bean
+    @Profile("prod")
     public DataSource partnerBillingDs() {
         final HikariConfig cfg = new HikariConfig();
-        cfg.setJdbcUrl(props.getPartnerBillingUrl());
-        cfg.setDataSourceClassName(props.getPartnerBillingDatasource());
-        cfg.setUsername(props.getPartnerBillingUsername());
-        cfg.setPassword(props.getPartnerBillingPassword());
-        cfg.addDataSourceProperty("cachePrepStmts", props.getCachePrepStatements());
-        cfg.addDataSourceProperty("prepStmtCacheSize", props.getPrepStatementCacheSize());
-        cfg.addDataSourceProperty("prepStmtCacheSqlLimit", props.getPrepStatementCacheSqlLimit());
+        cfg.setJdbcUrl(appProps.getPartnerBillingUrl());
+        cfg.setUsername(appProps.getPartnerBillingUsername());
+        cfg.setPassword(appProps.getPartnerBillingPassword());
+        cfg.addDataSourceProperty("cachePrepStmts", appProps.getCachePrepStatements());
+        cfg.addDataSourceProperty("prepStmtCacheSize", appProps.getPrepStatementCacheSize());
+        cfg.addDataSourceProperty("prepStmtCacheSqlLimit", appProps.getPrepStatementCacheSqlLimit());
 
         HikariDataSource ds = new HikariDataSource(cfg);
 
@@ -70,24 +65,34 @@ public class PartnerBillingConfig {
     }
 
     @Bean
-    public JdbcTemplate partnerBillingTemplate() {
-        return new JdbcTemplate(partnerBillingDs());
+    public JdbcTemplate partnerBillingTemplate(DataSource partnerBillingDs) {
+        return new JdbcTemplate(partnerBillingDs);
     }
 
-    @Bean
-    public JdbcPagingItemReader cdrReader() throws Exception {
+    public SqlPagingQueryProviderFactoryBean createPagingQuery() {
         SqlPagingQueryProviderFactoryBean queryProvider = new SqlPagingQueryProviderFactoryBean();
         queryProvider.setSelectClause(SqlConst.RETRIEVE_CDR_RECORDS_SELECT);
         queryProvider.setFromClause(SqlConst.RETRIEVE_CDR_RECORDS_FROM);
         queryProvider.setWhereClause(SqlConst.RETRIEVE_CDR_RECORDS_WHERE);
+        queryProvider.setSortKey("uniqueid");
+
+        return queryProvider;
+    }
+    
+    @Bean
+    public JdbcPagingItemReader cdrReader(DataSource partnerBillingDs) throws Exception {
+        SqlPagingQueryProviderFactoryBean queryProvider = createPagingQuery();
+        queryProvider.setDataSource(partnerBillingDs);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
         Map<String, Date> params = new HashMap<>();
-        params.put("start", formatter.parse(startDate));
-        params.put("end", formatter.parse(endDate));
+        params.put("start", formatter.parse(appProps.getStartDate()));
+        params.put("end", formatter.parse(appProps.getEndDate()));
 
         JdbcPagingItemReader reader = new JdbcPagingItemReader();
+        // Use partner billing for setup, it will be replaced with 1 for the target machines
+        reader.setDataSource(partnerBillingDs);
         reader.setFetchSize(appProps.getFetchSize());
         reader.setQueryProvider(queryProvider.getObject());
         reader.setPageSize(appProps.getPagingSize());
@@ -97,9 +102,9 @@ public class PartnerBillingConfig {
     }
 
     @Bean
-    public JdbcBatchItemWriter cdrWriter() {
+    public JdbcBatchItemWriter cdrWriter(DataSource partnerBillingDs) {
         JdbcBatchItemWriter writer = new JdbcBatchItemWriter();
-        writer.setDataSource(partnerBillingDs());
+        writer.setDataSource(partnerBillingDs);
         writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider());
         writer.setSql(SqlConst.WRITE_CDR_QUERY);
 
@@ -107,12 +112,13 @@ public class PartnerBillingConfig {
     }
 
     @Bean
-    public Job createJob(StepBuilderFactory stepBuilderFactory, JobBuilderFactory jobs) throws Exception {
+    public Job createJob(StepBuilderFactory stepBuilderFactory, JobBuilderFactory jobs,
+            DataSource partnerBillingDs) throws Exception {
         Step getDatasource = stepBuilderFactory.get("getDatasource").tasklet(dsSupplier).build();
         Step retrieveCdrs = stepBuilderFactory.get("stepRetrieveCdrs")
                 .<Cdr, Cdr>chunk(appProps.getChunkSize())
-                .reader(cdrReader())
-                .writer(cdrWriter()).build();
+                .reader(cdrReader(partnerBillingDs))
+                .writer(cdrWriter(partnerBillingDs)).build();
         
         return jobs.get("partner-billing").incrementer(new RunIdIncrementer())
                 .start(getDatasource)
@@ -124,7 +130,7 @@ public class PartnerBillingConfig {
     }
     
     @Bean
-    public PropertyPlaceholderConfigurer propPlaceholder() {
-        return new PropertyPlaceholderConfigurer();
+    public static PropertySourcesPlaceholderConfigurer propPlaceholder() {
+        return new PropertySourcesPlaceholderConfigurer();
     }
 }
