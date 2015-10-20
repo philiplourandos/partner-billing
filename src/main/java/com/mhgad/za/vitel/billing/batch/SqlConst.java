@@ -51,7 +51,7 @@ public class SqlConst {
             + "     amaflags,"
             + "     accountcode,"
             + "     userfield,"
-            + "     cost "
+            + "     cost) "
             + " VALUES( "
             + "     :uniqueid,"
             + "     :callDate,"
