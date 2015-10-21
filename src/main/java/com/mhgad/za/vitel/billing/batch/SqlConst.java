@@ -70,4 +70,38 @@ public class SqlConst {
             + "     :accountcode,"
             + "     :userfield,"
             + "     :cost)";
+    
+    
+    public static final String FILE_OUT_CDR_RECORDS_SELECT = 
+            "   SELECT "
+            + "     r.uniqueid,"
+            + "     r.calldate,"
+            + "     r.clid,"
+            + "     r.src,"
+            + "     r.dst,"
+            + "     r.dcontext,"
+            + "     r.channel,"
+            + "     r.dstchannel,"
+            + "     r.lastapp,"
+            + "     r.lastdata,"
+            + "     r.duration,"
+            + "     r.billsec,"
+            + "     r.disposition,"
+            + "     r.amaflags,"
+            + "     r.accountcode,"
+            + "     r.userfield,"
+            + "     r.cost";
+    
+    public static final String FILE_OUT_CDR_RECORDS_FROM = 
+            "   WHERE "
+            + "     cdr r,"
+            + "     partner p,"
+            + "     site s";
+    
+    public static final String FILE_OUT_CDR_RECORDS_WHERE =
+            "   s.name = :site"
+            + " AND "
+            + " p.site_id = s.id "
+            + " AND "
+            + " r.accountcode = p.accountcode";
 }
