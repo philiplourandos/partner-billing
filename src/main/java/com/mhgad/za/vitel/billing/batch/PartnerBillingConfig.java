@@ -106,6 +106,25 @@ public class PartnerBillingConfig {
 
         return writer;
     }
+    
+    @Bean(name = "fileoutReader")
+    public JdbcPagingItemReader fileoutReader(DataSource partnerBillingDs) throws Exception {
+        SqlPagingQueryProviderFactoryBean queryProvider = new SqlPagingQueryProviderFactoryBean();
+        queryProvider.setSelectClause(SqlConst.FILE_OUT_CDR_RECORDS_SELECT);
+        queryProvider.setFromClause(SqlConst.FILE_OUT_CDR_RECORDS_FROM);
+        queryProvider.setWhereClause(SqlConst.FILE_OUT_CDR_RECORDS_WHERE);
+        queryProvider.setSortKey("uniqueid");
+        queryProvider.setDataSource(partnerBillingDs);
+        
+        JdbcPagingItemReader reader = new JdbcPagingItemReader();
+        reader.setDataSource(partnerBillingDs);
+        reader.setFetchSize(appProps.getFetchSize());
+        reader.setQueryProvider(queryProvider.getObject());
+        reader.setPageSize(appProps.getPagingSize());
+        reader.setRowMapper(new CdrMapper());
+
+        return reader;
+    }
 
     @Bean
     public Job createJob(StepBuilderFactory stepBuilderFactory, JobBuilderFactory jobs,
