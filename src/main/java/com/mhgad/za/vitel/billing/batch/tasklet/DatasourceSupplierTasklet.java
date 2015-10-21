@@ -1,7 +1,6 @@
 package com.mhgad.za.vitel.billing.batch.tasklet;
 
 import com.mhgad.za.vitel.billing.batch.AppProps;
-import com.mhgad.za.vitel.billing.batch.PartnerBillingConfig;
 import com.mhgad.za.vitel.billing.batch.model.DbServer;
 import com.mhgad.za.vitel.billing.batch.repo.PartnerBillingRepo;
 import com.zaxxer.hikari.HikariConfig;
@@ -59,7 +58,7 @@ public class DatasourceSupplierTasklet implements Tasklet, InitializingBean {
     public void afterPropertiesSet() throws Exception {
         List<DbServer> dbServers = dbServersRepo.findAllServers();
 
-        for(DbServer currentServer : dbServers) {
+        for (DbServer currentServer : dbServers) {
             final HikariConfig cfg = new HikariConfig();
             cfg.setJdbcUrl(currentServer.getUrl());
             cfg.setUsername(currentServer.getUsername());
