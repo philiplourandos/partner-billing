@@ -1,5 +1,6 @@
 package com.mhgad.za.vitel.billing.batch;
 
+import com.mhgad.za.vitel.billing.batch.biz.CdrProcessor;
 import com.mhgad.za.vitel.billing.batch.decision.NextDatasourceDecision;
 import com.mhgad.za.vitel.billing.batch.mapper.CdrMapper;
 import com.mhgad.za.vitel.billing.batch.model.Cdr;
@@ -49,6 +50,9 @@ public class PartnerBillingConfig {
 
     @Autowired
     private NextDatasourceDecision dsDecision;
+    
+    @Autowired
+    private CdrProcessor costItemProc;
 
     @Bean
     @Profile("prod")
@@ -134,6 +138,7 @@ public class PartnerBillingConfig {
         Step retrieveCdrs = stepBuilderFactory.get("stepRetrieveCdrs")
                 .<Cdr, Cdr>chunk(appProps.getChunkSize())
                 .reader(cdrReader(partnerBillingDs))
+                .processor(costItemProc)
                 .writer(cdrWriter(partnerBillingDs)).build();
 
         return jobs.get("partner-billing").incrementer(new RunIdIncrementer())
