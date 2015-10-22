@@ -1,4 +1,4 @@
-package com.mhgad.za.vitel.billing.batch;
+package com.mhgad.za.vitel.billing.batch.biz;
 
 import com.mhgad.za.vitel.billing.batch.model.Cdr;
 import java.text.SimpleDateFormat;
