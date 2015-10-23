@@ -23,9 +23,9 @@ import org.springframework.stereotype.Component;
  * @author plourand
  */
 @Component
-public class FileoutputTasklet implements Tasklet, InitializingBean {
+public class SiteSupplierTasklet implements Tasklet, InitializingBean {
 
-    private static final Logger LOG = LogManager.getLogger(FileoutputTasklet.class);
+    private static final Logger LOG = LogManager.getLogger(SiteSupplierTasklet.class);
 
     private static final String REPLACEMENT_VALUE = "site";
 
@@ -38,7 +38,7 @@ public class FileoutputTasklet implements Tasklet, InitializingBean {
 
     private final Queue<Site> sites;
 
-    public FileoutputTasklet() {
+    public SiteSupplierTasklet() {
         sites = new LinkedList<>();
     }
 
