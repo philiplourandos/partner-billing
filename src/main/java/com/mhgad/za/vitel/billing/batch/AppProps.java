@@ -37,6 +37,9 @@ public class AppProps {
     @Value("${jdbc.prepared.statement.cache.sql.limit}")
     private Integer prepStatementCacheSqlLimit;
     
+    @Value("${output.path}")
+    private String outputPath;
+    
     public AppProps() {
     }
 
@@ -86,5 +89,13 @@ public class AppProps {
 
     public String getStartDate() {
         return startDate;
+    }
+
+    public String getOutputPath() {
+        return outputPath;
+    }
+
+    public void setOutputPath(String outputPath) {
+        this.outputPath = outputPath;
     }
 }
