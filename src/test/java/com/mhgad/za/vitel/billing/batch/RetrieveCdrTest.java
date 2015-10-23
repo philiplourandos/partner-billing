@@ -53,7 +53,7 @@ public class RetrieveCdrTest {
         assertEquals(EXPECTED_INITIAL_DATASOURCE_COUNT, dsTasklet.getDatasources().size());
 
         JobExecution jobRun = launcher.run(retrieveCdrsJob, new JobParametersBuilder().toJobParameters());
-        //assertEquals(BatchStatus.COMPLETED, jobRun.getStatus());
+        assertEquals(BatchStatus.COMPLETED, jobRun.getStatus());
 
         assertTrue(dsTasklet.getDatasources().isEmpty());
         
