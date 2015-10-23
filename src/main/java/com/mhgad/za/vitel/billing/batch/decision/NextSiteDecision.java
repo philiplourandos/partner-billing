@@ -1,7 +1,7 @@
 package com.mhgad.za.vitel.billing.batch.decision;
 
 import com.mhgad.za.vitel.billing.batch.PartnerBillingConst;
-import com.mhgad.za.vitel.billing.batch.tasklet.FileoutputTasklet;
+import com.mhgad.za.vitel.billing.batch.tasklet.SiteSupplierTasklet;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.job.flow.FlowExecutionStatus;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class NextSiteDecision implements JobExecutionDecider {
 
     @Autowired
-    private FileoutputTasklet task;
+    private SiteSupplierTasklet task;
     
     public NextSiteDecision() {
     }
