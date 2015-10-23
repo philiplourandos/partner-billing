@@ -1,10 +1,13 @@
 package com.mhgad.za.vitel.billing.batch;
 
+import com.mhgad.za.vitel.billing.batch.biz.CdrFieldExtractor;
 import com.mhgad.za.vitel.billing.batch.biz.CdrProcessor;
 import com.mhgad.za.vitel.billing.batch.decision.NextDatasourceDecision;
+import com.mhgad.za.vitel.billing.batch.decision.NextSiteDecision;
 import com.mhgad.za.vitel.billing.batch.mapper.CdrMapper;
 import com.mhgad.za.vitel.billing.batch.model.Cdr;
 import com.mhgad.za.vitel.billing.batch.tasklet.DatasourceSupplierTasklet;
+import com.mhgad.za.vitel.billing.batch.tasklet.SiteSupplierTasklet;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.text.SimpleDateFormat;
@@ -14,18 +17,19 @@ import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.flow.FlowExecutionStatus;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
+import org.springframework.batch.item.file.FlatFileItemWriter;
+import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -54,7 +58,13 @@ public class PartnerBillingConfig {
     private DatasourceSupplierTasklet dsSupplier;
 
     @Autowired
+    private SiteSupplierTasklet siteSupplier;
+
+    @Autowired
     private NextDatasourceDecision dsDecision;
+    
+    @Autowired
+    private NextSiteDecision siteDecision;
     
     @Autowired
     private CdrProcessor costItemProc;
@@ -125,7 +135,7 @@ public class PartnerBillingConfig {
         queryProvider.setWhereClause(SqlConst.FILE_OUT_CDR_RECORDS_WHERE);
         queryProvider.setSortKey("uniqueid");
         queryProvider.setDataSource(partnerBillingDs);
-        
+
         JdbcPagingItemReader reader = new JdbcPagingItemReader();
         reader.setDataSource(partnerBillingDs);
         reader.setFetchSize(appProps.getFetchSize());
@@ -134,6 +144,19 @@ public class PartnerBillingConfig {
         reader.setRowMapper(new CdrMapper());
 
         return reader;
+    }
+    
+    @Bean
+    public FlatFileItemWriter<Cdr> fileoutWriter() {
+        DelimitedLineAggregator lineAgg = new DelimitedLineAggregator();
+        lineAgg.setDelimiter(",");
+        lineAgg.setFieldExtractor(new CdrFieldExtractor());
+        
+        FlatFileItemWriter<Cdr> writer = new FlatFileItemWriter<>();
+        writer.setEncoding("UTF-8");
+        writer.setLineAggregator(lineAgg);
+
+        return writer;
     }
 
     @Bean
@@ -146,13 +169,26 @@ public class PartnerBillingConfig {
                 .processor(costItemProc)
                 .writer(cdrWriter(partnerBillingDs)).build();
 
+        Step getSite = stepBuilderFactory.get("getSites").tasklet(siteSupplier).build();
+        Step writeOutFiles = stepBuilderFactory.get("writeOutFiles")
+                .<Cdr, Cdr>chunk(appProps.getChunkSize())
+                .reader(fileoutReader(partnerBillingDs))
+                .writer(fileoutWriter()).build();
+
         return jobs.get("partner-billing").incrementer(new RunIdIncrementer())
                 .start(getDatasource)
                 .next(retrieveCdrs)
                 .next(dsDecision)
                 .on(PartnerBillingConst.STATUS_CONTINUE)
                 .to(getDatasource)
-                .from(dsDecision).on(FlowExecutionStatus.COMPLETED.toString()).to(endStep(stepBuilderFactory)).end().build();
+                .from(dsDecision).on(FlowExecutionStatus.COMPLETED.toString())
+                .to(getSite)
+                .next(writeOutFiles)
+                .next(siteDecision)
+                .on(PartnerBillingConst.STATUS_CONTINUE)
+                .to(getSite)
+                .from(siteDecision).on(FlowExecutionStatus.COMPLETED.toString())
+                .to(endStep(stepBuilderFactory)).end().build();
     }
     
     @Bean
