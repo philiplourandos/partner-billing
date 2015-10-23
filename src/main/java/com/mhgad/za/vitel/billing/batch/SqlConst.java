@@ -93,7 +93,7 @@ public class SqlConst {
             + "     r.cost";
     
     public static final String FILE_OUT_CDR_RECORDS_FROM = 
-            "   WHERE "
+            "   FROM "
             + "     cdr r,"
             + "     partner p,"
             + "     site s";
