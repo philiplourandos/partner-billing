@@ -10,7 +10,7 @@ import org.springframework.batch.item.file.transform.FieldExtractor;
  */
 public class CdrFieldExtractor implements FieldExtractor<Cdr> {
 
-    private static final int FIELD_COUNT = 16;
+    private static final int FIELD_COUNT = 17;
     private static final String DOUBLE_QUOTE = "\"";
 
     public CdrFieldExtractor() {
