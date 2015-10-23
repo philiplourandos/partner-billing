@@ -14,14 +14,19 @@ import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.flow.FlowExecutionStatus;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -147,7 +152,7 @@ public class PartnerBillingConfig {
                 .next(dsDecision)
                 .on(PartnerBillingConst.STATUS_CONTINUE)
                 .to(getDatasource)
-                .end().build();
+                .from(dsDecision).on(FlowExecutionStatus.COMPLETED.toString()).to(endStep(stepBuilderFactory)).end().build();
     }
     
     @Bean
@@ -158,5 +163,11 @@ public class PartnerBillingConfig {
     @Bean
     public DataSourceTransactionManager transactionManager(DataSource partnerBillingDs) {
         return new DataSourceTransactionManager(partnerBillingDs);
+    }
+    
+    public Step endStep(StepBuilderFactory stepBuilderFactory) {
+        Tasklet task = (contribution, chunkContext) -> {return RepeatStatus.FINISHED;};
+        
+        return stepBuilderFactory.get("end").tasklet(task).build();
     }
 }
