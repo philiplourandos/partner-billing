@@ -26,18 +26,18 @@ import org.springframework.stereotype.Component;
 public class FileoutputTasklet implements Tasklet, InitializingBean {
 
     private static final Logger LOG = LogManager.getLogger(FileoutputTasklet.class);
-    
+
     private static final String REPLACEMENT_VALUE = "site";
-    
+
     @Autowired
     @Qualifier("fileoutReader")
     private JdbcPagingItemReader reader;
-    
+
     @Autowired
     private PartnerBillingRepo repo;
-    
+
     private final Queue<Site> sites;
-    
+
     public FileoutputTasklet() {
         sites = new LinkedList<>();
     }
@@ -52,18 +52,18 @@ public class FileoutputTasklet implements Tasklet, InitializingBean {
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         RepeatStatus response = RepeatStatus.FINISHED;
-        
-        if (!sites.isEmpty()) {
-            Site next = sites.poll();
-            
-            Map<String, String> searchParams = new HashMap<>();
-            searchParams.put(REPLACEMENT_VALUE, next.getOutputFile());
 
-            reader.setParameterValues(searchParams);
+        Site next = sites.poll();
 
-            response = RepeatStatus.CONTINUABLE;
-        }
-        
+        Map<String, String> searchParams = new HashMap<>();
+        searchParams.put(REPLACEMENT_VALUE, next.getName());
+
+        reader.setParameterValues(searchParams);
+
         return response;
+    }
+
+    public Queue<Site> getSites() {
+        return sites;
     }
 }
