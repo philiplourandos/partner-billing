@@ -21,6 +21,19 @@ The issues mentioned above have been addressed with:
 
 ## Load datasources
 
-We retrieve the entries from *db_servers* which has all the jdbc parameters and the site it is associated with and then create a datasource for each entry
+We retrieve the entries from *db_servers* which has all the jdbc parameters and the site it is associated with and then create a datasource for each entry.
+We store these values in a queue so that it can be drained when we have consumed all CDR records from the target datasource and move onto the next
+
+## Read from asterisk_cdr
+
+Read entries from the remote asterisk_cdr database and write them into another database that resembles the asterisk_cdr one. This process will continue until
+all datasources are completed
+
+## Retrieve sites
+
+There are only 2 sites 'JHB' and 'CT' but we have a mechanism that caters for more should it arise. Similar to the datasources, we load the sites and place them
+in a queue structure which can be drained. We supply the reader with the current site id we are processing.
+
+# Write files
 
 
