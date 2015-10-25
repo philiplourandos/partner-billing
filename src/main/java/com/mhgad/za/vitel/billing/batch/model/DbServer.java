@@ -9,6 +9,7 @@ public class DbServer {
     private String url;
     private String username;
     private String password;
+    private Integer siteId;
 
     public DbServer() {
     }
@@ -43,5 +44,13 @@ public class DbServer {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Integer getSiteId() {
+        return siteId;
+    }
+
+    public void setSiteId(Integer siteId) {
+        this.siteId = siteId;
     }
 }
