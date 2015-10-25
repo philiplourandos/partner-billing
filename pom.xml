@@ -12,6 +12,35 @@
         <spring.version>4.2.2.RELEASE</spring.version>
         <log4j.version>2.4.1</log4j.version>
     </properties>
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <flyway.url>jdbc:mysql://localhost:3306/partner-billing</flyway.url>
+                <flyway.username>vitel</flyway.username>
+                <flyway.password>MS|JEy2W?8xyD|R/gk[=`49dJP~$VK+Y|_j0Ihhdi'\s2w[O?8*fziL^H9$[rxp</flyway.password>
+            </properties>
+        </profile>
+    </profiles>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>3.2.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.mariadb.jdbc</groupId>
+                        <artifactId>mariadb-java-client</artifactId>
+                        <version>1.2.3</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
     <dependencyManagement>
         <dependencies>
             <dependency>
