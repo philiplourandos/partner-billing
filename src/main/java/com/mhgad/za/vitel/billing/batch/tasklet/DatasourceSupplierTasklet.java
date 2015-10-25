@@ -1,6 +1,7 @@
 package com.mhgad.za.vitel.billing.batch.tasklet;
 
 import com.mhgad.za.vitel.billing.batch.AppProps;
+import com.mhgad.za.vitel.billing.batch.biz.CdrPrepStatementSetter;
 import com.mhgad.za.vitel.billing.batch.model.DbServer;
 import com.mhgad.za.vitel.billing.batch.repo.PartnerBillingRepo;
 import com.zaxxer.hikari.HikariConfig;
@@ -8,12 +9,12 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import javax.sql.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.InitializingBean;
@@ -29,7 +30,7 @@ public class DatasourceSupplierTasklet implements Tasklet, InitializingBean {
 
     private static final Logger LOG = LogManager.getLogger(DatasourceSupplierTasklet.class);
     
-    private final Queue<DataSource> datasources;
+    private final Queue<CdrSource> cdrSources;
     
     @Autowired
     private PartnerBillingRepo dbServersRepo;
@@ -39,17 +40,22 @@ public class DatasourceSupplierTasklet implements Tasklet, InitializingBean {
 
     @Autowired
     private AppProps props;
+
+    @Autowired
+    private JdbcBatchItemWriter writer;
     
     public DatasourceSupplierTasklet() {
-        datasources = new LinkedList<>();
+        cdrSources = new LinkedList<>();
     }
 
     @Override
     public RepeatStatus execute(StepContribution sc, ChunkContext cc) throws Exception {
-        DataSource next = datasources.poll();
+        CdrSource next = cdrSources.poll();
 
-        cdrReader.setDataSource(next);
+        cdrReader.setDataSource(next.getDs());
         cdrReader.afterPropertiesSet();
+
+        writer.setItemPreparedStatementSetter(new CdrPrepStatementSetter(next.getSiteId()));
 
         return RepeatStatus.FINISHED;
     }
@@ -69,13 +75,13 @@ public class DatasourceSupplierTasklet implements Tasklet, InitializingBean {
 
             HikariDataSource ds = new HikariDataSource(cfg);
 
-            datasources.add(ds);
+            cdrSources.add(new CdrSource(ds, currentServer.getSiteId()));
         }
 
-        LOG.info("Loaded {} datasources", datasources.size());
+        LOG.info("Loaded {} datasources", cdrSources.size());
     }
 
-    public Queue<DataSource> getDatasources() {
-        return datasources;
+    public Queue<CdrSource> getDatasources() {
+        return cdrSources;
     }
 }
