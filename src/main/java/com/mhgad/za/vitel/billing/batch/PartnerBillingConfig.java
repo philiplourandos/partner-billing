@@ -23,8 +23,6 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.job.flow.FlowExecutionStatus;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
@@ -121,12 +119,12 @@ public class PartnerBillingConfig {
     public JdbcBatchItemWriter cdrWriter(DataSource partnerBillingDs) {
         JdbcBatchItemWriter writer = new JdbcBatchItemWriter();
         writer.setDataSource(partnerBillingDs);
-        writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider());
+        writer.setItemPreparedStatementSetter((item, ps) -> {});
         writer.setSql(SqlConst.WRITE_CDR_QUERY);
 
         return writer;
     }
-    
+
     @Bean(name = "fileoutReader")
     public JdbcPagingItemReader fileoutReader(DataSource partnerBillingDs) throws Exception {
         SqlPagingQueryProviderFactoryBean queryProvider = new SqlPagingQueryProviderFactoryBean();
