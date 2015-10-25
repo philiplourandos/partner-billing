@@ -24,16 +24,18 @@ The issues mentioned above have been addressed with:
 We retrieve the entries from *db_servers* which has all the jdbc parameters and the site it is associated with and then create a datasource for each entry.
 We store these values in a queue so that it can be drained when we have consumed all CDR records from the target datasource and move onto the next
 
-## Read from asterisk_cdr
+## Read from datasource asterisk_cdr and write to common Cdr db
 
 Read entries from the remote asterisk_cdr database and write them into another database that resembles the asterisk_cdr one. This process will continue until
-all datasources are completed
+all datasources are completed. A small amount of processing happens:
+* If there is no unique id we generate 1 and set it on the Cdr bean
+* We calculate the cost of the call by taking hard coded per second cost value and multiple my billingSeconds.
 
 ## Retrieve sites
 
 There are only 2 sites 'JHB' and 'CT' but we have a mechanism that caters for more should it arise. Similar to the datasources, we load the sites and place them
 in a queue structure which can be drained. We supply the reader with the current site id we are processing.
 
-# Write files
+## Read from common db and write files
 
-
+We read all the CDR's for the current site and write the records to the output file defined in the sites table. We repeat this till all the sites are done.
