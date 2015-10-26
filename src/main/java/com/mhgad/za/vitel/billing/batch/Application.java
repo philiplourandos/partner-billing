@@ -1,7 +1,5 @@
 package com.mhgad.za.vitel.billing.batch;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.batch.core.Job;
