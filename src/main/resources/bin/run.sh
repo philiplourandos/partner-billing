@@ -1,3 +1,3 @@
 #!/bin/sh
 
-java -jar ../lib/${project.build.finalName}.jar -Dspring.profiles.active=prod
+java -cp "../lib/*:../etc" com.mhgad.za.vitel.billing.batch.Application -Dspring.profiles.active=prod
