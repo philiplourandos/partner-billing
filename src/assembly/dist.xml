@@ -21,4 +21,9 @@
             </includes>
         </fileSet>
     </fileSets>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+        </dependencySet>
+    </dependencySets>
 </assembly>
