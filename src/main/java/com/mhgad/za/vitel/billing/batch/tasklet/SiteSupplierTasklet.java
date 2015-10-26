@@ -4,6 +4,7 @@ import com.mhgad.za.vitel.billing.batch.AppProps;
 import com.mhgad.za.vitel.billing.batch.model.Site;
 import com.mhgad.za.vitel.billing.batch.repo.PartnerBillingRepo;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -31,7 +32,9 @@ public class SiteSupplierTasklet implements Tasklet, InitializingBean {
 
     private static final Logger LOG = LogManager.getLogger(SiteSupplierTasklet.class);
 
-    private static final String REPLACEMENT_VALUE = "site";
+    private static final String SITE_QUERY_PARAM = "site";
+    private static final String START_DATE_QUERY_PARAM = "startdate";
+    private static final String END_DATE_QUERY_PARAM = "enddate";
 
     @Autowired
     @Qualifier("fileoutReader")
@@ -65,8 +68,12 @@ public class SiteSupplierTasklet implements Tasklet, InitializingBean {
 
         Site next = sites.poll();
 
-        Map<String, String> searchParams = new HashMap<>();
-        searchParams.put(REPLACEMENT_VALUE, next.getName());
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        
+        Map<String, Object> searchParams = new HashMap<>();
+        searchParams.put(SITE_QUERY_PARAM, next.getName());
+        searchParams.put(START_DATE_QUERY_PARAM, dateFormatter.parse(props.getStartDate()));
+        searchParams.put(END_DATE_QUERY_PARAM, dateFormatter.parse(props.getEndDate()));
 
         reader.setParameterValues(searchParams);
 
