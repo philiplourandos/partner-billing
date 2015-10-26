@@ -18,6 +18,7 @@ public class Application {
     public static void main(String[] args) throws Exception {
         AnnotationConfigApplicationContext context = 
                 new AnnotationConfigApplicationContext("com.mhgad.za.vitel.billing.batch");
+        context.refresh();
         
         final Job generateReports = context.getBean(Job.class);
         final JobLauncher launcher = context.getBean(JobLauncher.class);
