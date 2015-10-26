@@ -7,15 +7,15 @@
     </formats>
     <fileSets>
         <fileSet>
-            <directory>src/main/resources/bin</directory>
+            <directory>src/assembly/bin</directory>
             <outputDirectory>bin</outputDirectory>
             <directoryMode>0555</directoryMode>
             <fileMode>0755</fileMode>
             <filtered>true</filtered>
         </fileSet>
         <fileSet>
-            <directory>src/main/resources</directory>
-            <directoryMode>0555</directoryMode>
+            <directory>src/assembly</directory>
+            <directoryMode>0755</directoryMode>
             <outputDirectory>etc</outputDirectory>
             <includes>
                 <include>log4j2.xml</include>
