@@ -19,9 +19,9 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <flyway.url>jdbc:mysql://localhost:3306/partner-billing</flyway.url>
-                <flyway.username>vitel</flyway.username>
-                <flyway.password>MS|JEy2W?8xyD|R/gk[=`49dJP~$VK+Y|_j0Ihhdi'\s2w[O?8*fziL^H9$[rxp</flyway.password>
+                <flyway.url>jdbc:mysql://localhost:3306/partnerbilling</flyway.url>
+                <flyway.user>billing</flyway.user>
+                <flyway.password>nhXWy7PHgSBSA55Ys5dP</flyway.password>
             </properties>
         </profile>
     </profiles>
