@@ -1,3 +1,3 @@
 #!/bin/sh
 
-java -cp "../lib/*:../etc" com.mhgad.za.vitel.billing.batch.Application -Dspring.profiles.active=prod
+java -cp "../lib/*:../etc" -Dspring.profiles.active=prod com.mhgad.za.vitel.billing.batch.Application
