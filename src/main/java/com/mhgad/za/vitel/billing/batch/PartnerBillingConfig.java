@@ -35,6 +35,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -47,6 +48,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 @Configuration
 @EnableBatchProcessing
 @EnableAspectJAutoProxy
+@PropertySource("classpath:/app.properties")
 public class PartnerBillingConfig {
 
     @Autowired
