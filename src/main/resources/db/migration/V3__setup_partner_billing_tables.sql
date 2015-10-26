@@ -4,3 +4,4 @@ CREATE TABLE discipline_group (id int NOT NULL AUTO_INCREMENT, name varchar(25),
 CREATE TABLE partner (id int NOT NULL AUTO_INCREMENT, site_id int, name varchar(25), description varchar(50), accountcode int, group_id int, discipline_id int, PRIMARY KEY (id), CONSTRAINT key_partner_acc_code UNIQUE (site_id, accountcode), INDEX fk_grp_id (group_id)) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 CREATE TABLE partner_group (id int NOT NULL AUTO_INCREMENT, name varchar(25), description varchar(50), site_id int, PRIMARY KEY (id), INDEX site_id (site_id)) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 CREATE TABLE site (id int NOT NULL AUTO_INCREMENT, name varchar(25), description varchar(50), PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+ALTER TABLE db_servers ADD CONSTRAINT fk_site_id FOREIGN KEY (site_id) REFERENCES site(id);
