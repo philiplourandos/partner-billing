@@ -107,5 +107,7 @@ public class SqlConst {
             + " AND "
             + " r.accountcode = p.accountcode"
             + " AND "
-            + " s.id = r.site_id";
+            + " s.id = r.site_id "
+            + " AND "
+            + " r.calldate BETWEEN :startdate AND :enddate";
 }
