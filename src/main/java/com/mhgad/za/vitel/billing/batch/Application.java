@@ -35,7 +35,7 @@ public class Application {
             LOG.info("Starting partner billing run.");
             JobExecution runStatus = launcher.run(generateReports, paramBuilder.toJobParameters());
 
-            LOG.info("Run completed, status: %s", runStatus.getExitStatus());
+            LOG.info("Run completed, status: {}", runStatus.getExitStatus());
         }
     }
 }
