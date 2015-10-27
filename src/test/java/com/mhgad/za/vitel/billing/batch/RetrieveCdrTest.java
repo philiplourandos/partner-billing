@@ -36,6 +36,9 @@ public class RetrieveCdrTest {
     private static final Integer EXPECTED_ROW_COUNT = 60;
     private static final String CDR_DST_CHANNEL_WITH_NO_UUID = "IAX2/jhblvgw05_is_voip_out-29085";
 
+    private static final String START_DATE = "2000-01-01";
+    private static final String END_DATE = "2016-01-10";
+
     @Autowired
     private DatasourceSupplierTasklet dsTasklet;
 
@@ -52,7 +55,11 @@ public class RetrieveCdrTest {
     public void success() throws JobExecutionException {
         assertEquals(EXPECTED_INITIAL_DATASOURCE_COUNT, dsTasklet.getDatasources().size());
 
-        JobExecution jobRun = launcher.run(retrieveCdrsJob, new JobParametersBuilder().toJobParameters());
+        JobParametersBuilder paramBuilder = new JobParametersBuilder();
+        paramBuilder.addString(PartnerBillingConst.PARAM_START_DATE, START_DATE);
+        paramBuilder.addString(PartnerBillingConst.PARAM_END_DATE, END_DATE);
+
+        JobExecution jobRun = launcher.run(retrieveCdrsJob, paramBuilder.toJobParameters());
         assertEquals(BatchStatus.COMPLETED, jobRun.getStatus());
 
         assertTrue(dsTasklet.getDatasources().isEmpty());
