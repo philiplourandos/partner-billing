@@ -92,17 +92,13 @@ public class SqlConst {
             + "     r.amaflags,"
             + "     r.accountcode,"
             + "     r.userfield,"
-            + "     r.cost";
-    
-    public static final String FILE_OUT_CDR_RECORDS_FROM = 
-            "   FROM "
+            + "     r.cost "
+            + " FROM "
             + "     cdr r,"
             + "     partner p,"
-            + "     site s";
-    
-    public static final String FILE_OUT_CDR_RECORDS_WHERE =
-            "   WHERE "
-            + "     s.name = :site"
+            + "     site s"
+            + " WHERE "
+            + "     s.name = ?"
             + "     AND "
             + "     p.site_id = s.id "
             + "     AND "
@@ -110,5 +106,5 @@ public class SqlConst {
             + "     AND "
             + "     s.id = r.site_id "
             + "     AND "
-            + "     r.calldate BETWEEN :startdate AND :enddate";
+            + "     r.calldate BETWEEN ? AND ?";
 }
