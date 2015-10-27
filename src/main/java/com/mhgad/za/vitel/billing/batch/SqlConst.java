@@ -106,5 +106,7 @@ public class SqlConst {
             + "     AND "
             + "     s.id = r.site_id "
             + "     AND "
-            + "     r.calldate BETWEEN ? AND ?";
+            + "     r.calldate BETWEEN ? AND ?"
+            + " ORDER BY "
+            + "     r.callDate";
 }
