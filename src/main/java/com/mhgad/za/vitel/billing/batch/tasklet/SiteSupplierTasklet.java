@@ -4,6 +4,7 @@ import com.mhgad.za.vitel.billing.batch.AppProps;
 import com.mhgad.za.vitel.billing.batch.model.Site;
 import com.mhgad.za.vitel.billing.batch.repo.PartnerBillingRepo;
 import java.io.File;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -14,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.repeat.RepeatStatus;
@@ -41,7 +43,7 @@ public class SiteSupplierTasklet implements Tasklet, InitializingBean {
     
     @Autowired
     @Qualifier("fileoutReader")
-    private JdbcPagingItemReader reader;
+    private JdbcCursorItemReader reader;
 
     @Autowired
     private PartnerBillingRepo repo;
@@ -72,13 +74,14 @@ public class SiteSupplierTasklet implements Tasklet, InitializingBean {
         Site next = sites.poll();
 
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        long start = dateFormatter.parse(appProps.getStartDate()).getTime();
+        long end = dateFormatter.parse(appProps.getEndDate()).getTime();
 
-        Map<String, Object> searchParams = new HashMap<>();
-        searchParams.put(SITE_QUERY_PARAM, next.getName());
-        searchParams.put(START_DATE_QUERY_PARAM, dateFormatter.parse(appProps.getStartDate()));
-        searchParams.put(END_DATE_QUERY_PARAM, dateFormatter.parse(appProps.getEndDate()));
-
-        reader.setParameterValues(searchParams);
+        reader.setPreparedStatementSetter((ps) -> {
+            ps.setString(1, next.getName());
+            ps.setDate(2, new Date(start));
+            ps.setDate(3, new Date(end));
+        });
 
         FileSystemResource outputFileRes = new FileSystemResource(
                 new File(props.getOutputPath(), next.getOutputFile()));
