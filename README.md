@@ -39,3 +39,19 @@ in a queue structure which can be drained. We supply the reader with the current
 ## Read from common db and write files
 
 We read all the CDR's for the current site and write the records to the output file defined in the sites table. We repeat this till all the sites are done.
+
+# Building
+
+The project is built with maven 3.3.x. The final output is a tarball in the target directory.
+
+```
+mvn clean install
+```
+
+# Database Setup
+
+The scripts to create the database are in *src/main/resources/db/migration*. 
+
+```
+mvn flyway:clean flyway:migrate
+```
