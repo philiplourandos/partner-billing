@@ -9,9 +9,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class AppProps {
-    @Value("${cdr.start.date}")
     private String startDate;
-    @Value("${cdr.end.date}")
     private String endDate;
     
     @Value("${fetch.size}")
@@ -87,8 +85,16 @@ public class AppProps {
         return endDate;
     }
 
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
     public String getStartDate() {
         return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
 
     public String getOutputPath() {
