@@ -37,6 +37,9 @@ public class SiteSupplierTasklet implements Tasklet, InitializingBean {
     private static final String END_DATE_QUERY_PARAM = "enddate";
 
     @Autowired
+    private AppProps appProps;
+    
+    @Autowired
     @Qualifier("fileoutReader")
     private JdbcPagingItemReader reader;
 
@@ -69,11 +72,11 @@ public class SiteSupplierTasklet implements Tasklet, InitializingBean {
         Site next = sites.poll();
 
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-        
+
         Map<String, Object> searchParams = new HashMap<>();
         searchParams.put(SITE_QUERY_PARAM, next.getName());
-        searchParams.put(START_DATE_QUERY_PARAM, dateFormatter.parse(props.getStartDate()));
-        searchParams.put(END_DATE_QUERY_PARAM, dateFormatter.parse(props.getEndDate()));
+        searchParams.put(START_DATE_QUERY_PARAM, dateFormatter.parse(appProps.getStartDate()));
+        searchParams.put(END_DATE_QUERY_PARAM, dateFormatter.parse(appProps.getEndDate()));
 
         reader.setParameterValues(searchParams);
 
