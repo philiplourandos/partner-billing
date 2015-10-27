@@ -208,6 +208,15 @@ public class PartnerBillingConfig {
         return stepBuilderFactory.get("end").tasklet(task).build();
     }
     
+    /**
+     * Helper step to get the start and end date from the job context as the values
+     * are now passed in via the job launcher.
+     * 
+     * @param stepBuilderFactory Builder to create step
+     * @param reader jdbc reader we need to set start and end dates on
+     * 
+     * @return Step returned
+     */
     public Step paramsStep(StepBuilderFactory stepBuilderFactory, JdbcPagingItemReader reader) {
         Tasklet task = (contribution, chunkContext) -> {
             Map<String, Object> jobsParams = chunkContext.getStepContext().getJobParameters();
