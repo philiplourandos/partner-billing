@@ -55,3 +55,11 @@ The scripts to create the database are in *src/main/resources/db/migration*.
 ```
 mvn flyway:clean flyway:migrate
 ```
+
+# Running
+
+When untarring the *tar.bz2 file there will be a *bin* directory with a shell script to invoke the application.
+
+```
+./run.sh 2015-09-01 2015-10-01
+```
