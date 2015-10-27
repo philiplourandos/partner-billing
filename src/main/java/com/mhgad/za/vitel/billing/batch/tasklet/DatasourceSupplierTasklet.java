@@ -9,6 +9,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import javax.sql.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.batch.core.StepContribution;
@@ -52,7 +53,11 @@ public class DatasourceSupplierTasklet implements Tasklet, InitializingBean {
     public RepeatStatus execute(StepContribution sc, ChunkContext cc) throws Exception {
         CdrSource next = cdrSources.poll();
 
-        cdrReader.setDataSource(next.getDs());
+        final DataSource ds = next.getDs();
+
+        LOG.info("Processing {}", ds);
+
+        cdrReader.setDataSource(ds);
         cdrReader.afterPropertiesSet();
 
         writer.setItemPreparedStatementSetter(new CdrPrepStatementSetter(next.getSiteId()));
@@ -72,6 +77,7 @@ public class DatasourceSupplierTasklet implements Tasklet, InitializingBean {
             cfg.addDataSourceProperty("cachePrepStmts", props.getCachePrepStatements());
             cfg.addDataSourceProperty("prepStmtCacheSize", props.getPrepStatementCacheSize());
             cfg.addDataSourceProperty("prepStmtCacheSqlLimit", props.getPrepStatementCacheSqlLimit());
+            cfg.setPoolName(currentServer.getUrl());
 
             HikariDataSource ds = new HikariDataSource(cfg);
 
