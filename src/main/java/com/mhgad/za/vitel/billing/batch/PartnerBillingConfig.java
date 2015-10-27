@@ -24,6 +24,7 @@ import org.springframework.batch.core.job.flow.FlowExecutionStatus;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
+import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
 import org.springframework.batch.item.file.FlatFileItemWriter;
@@ -124,20 +125,13 @@ public class PartnerBillingConfig {
     }
 
     @Bean(name = "fileoutReader")
-    public JdbcPagingItemReader fileoutReader(DataSource partnerBillingDs) throws Exception {
-        SqlPagingQueryProviderFactoryBean queryProvider = new SqlPagingQueryProviderFactoryBean();
-        queryProvider.setSelectClause(SqlConst.FILE_OUT_CDR_RECORDS_SELECT);
-        queryProvider.setFromClause(SqlConst.FILE_OUT_CDR_RECORDS_FROM);
-        queryProvider.setWhereClause(SqlConst.FILE_OUT_CDR_RECORDS_WHERE);
-        queryProvider.setSortKey("uniqueid");
-        queryProvider.setDataSource(partnerBillingDs);
-
-        JdbcPagingItemReader reader = new JdbcPagingItemReader();
-        reader.setDataSource(partnerBillingDs);
+    public JdbcCursorItemReader fileoutReader(DataSource partnerBillingDs) throws Exception {
+        JdbcCursorItemReader reader = new JdbcCursorItemReader();
         reader.setFetchSize(appProps.getFetchSize());
-        reader.setQueryProvider(queryProvider.getObject());
-        reader.setPageSize(appProps.getPagingSize());
+        reader.setDataSource(partnerBillingDs);
         reader.setRowMapper(new CdrMapper());
+        reader.setSql(SqlConst.FILE_OUT_CDR_RECORDS_SELECT);
+        reader.setPreparedStatementSetter((ps) -> {});
 
         return reader;
     }
