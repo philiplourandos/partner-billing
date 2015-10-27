@@ -22,6 +22,7 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.flow.FlowExecutionStatus;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
@@ -99,11 +100,7 @@ public class PartnerBillingConfig {
         queryProvider.setSortKey("uniqueid");
         queryProvider.setDataSource(partnerBillingDs);
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
         Map<String, Date> params = new HashMap<>();
-        params.put("start", formatter.parse(appProps.getStartDate()));
-        params.put("end", formatter.parse(appProps.getEndDate()));
 
         JdbcPagingItemReader reader = new JdbcPagingItemReader();
         // Use partner billing for setup, it will be replaced with 1 for the target machines
@@ -163,9 +160,12 @@ public class PartnerBillingConfig {
     public Job createJob(StepBuilderFactory stepBuilderFactory, JobBuilderFactory jobs,
             DataSource partnerBillingDs) throws Exception {
         Step getDatasource = stepBuilderFactory.get("getDatasource").tasklet(dsSupplier).build();
+        
+        JdbcPagingItemReader reader = cdrReader(partnerBillingDs);
+        
         Step retrieveCdrs = stepBuilderFactory.get("stepRetrieveCdrs")
                 .<Cdr, Cdr>chunk(appProps.getChunkSize())
-                .reader(cdrReader(partnerBillingDs))
+                .reader(reader)
                 .processor(costItemProc)
                 .writer(cdrWriter(partnerBillingDs)).build();
 
@@ -176,7 +176,8 @@ public class PartnerBillingConfig {
                 .writer(fileoutWriter()).build();
 
         return jobs.get("partner-billing").incrementer(new RunIdIncrementer())
-                .start(getDatasource)
+                .start(paramsStep(stepBuilderFactory, reader))
+                .next(getDatasource)
                 .next(retrieveCdrs)
                 .next(dsDecision)
                 .on(PartnerBillingConst.STATUS_CONTINUE)
@@ -205,5 +206,25 @@ public class PartnerBillingConfig {
         Tasklet task = (contribution, chunkContext) -> {return RepeatStatus.FINISHED;};
         
         return stepBuilderFactory.get("end").tasklet(task).build();
+    }
+    
+    public Step paramsStep(StepBuilderFactory stepBuilderFactory, JdbcPagingItemReader reader) {
+        Tasklet task = (contribution, chunkContext) -> {
+            Map<String, Object> jobsParams = chunkContext.getStepContext().getJobParameters();
+            appProps.setStartDate((String) jobsParams.get(PartnerBillingConst.PARAM_START_DATE));
+            appProps.setEndDate((String) jobsParams.get(PartnerBillingConst.PARAM_END_DATE));
+            
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+            Map<String, Date> params = new HashMap<>();
+            params.put("start", formatter.parse(appProps.getStartDate()));
+            params.put("end", formatter.parse(appProps.getEndDate()));
+
+            reader.setParameterValues(params);
+            
+            return RepeatStatus.FINISHED;
+        };
+        
+        return stepBuilderFactory.get("params").tasklet(task).build();
     }
 }
