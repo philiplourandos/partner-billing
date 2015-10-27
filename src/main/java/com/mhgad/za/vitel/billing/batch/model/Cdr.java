@@ -1,13 +1,13 @@
 package com.mhgad.za.vitel.billing.batch.model;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 /**
  *
  * @author plourand
  */
 public class Cdr {
-    private Date callDate;
+    private Timestamp callDate;
 	private String clid;
 	private String src;
 	private String dst;
@@ -28,11 +28,11 @@ public class Cdr {
     public Cdr() {
     }
 
-    public Date getCallDate() {
+    public Timestamp getCallDate() {
         return callDate;
     }
 
-    public void setCallDate(Date callDate) {
+    public void setCallDate(Timestamp callDate) {
         this.callDate = callDate;
     }
 

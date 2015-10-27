@@ -4,6 +4,7 @@ import com.mhgad.za.vitel.billing.batch.model.Cdr;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import org.springframework.batch.item.database.ItemPreparedStatementSetter;
 
 /**
@@ -40,7 +41,7 @@ public class CdrPrepStatementSetter implements ItemPreparedStatementSetter<Cdr> 
     @Override
     public void setValues(Cdr item, PreparedStatement ps) throws SQLException {
         ps.setString(UNIQUE_ID_INDEX, item.getUniqueid());
-        ps.setDate(CALL_DATE_INDEX, new Date(item.getCallDate().getTime()));
+        ps.setTimestamp(CALL_DATE_INDEX, new Timestamp(item.getCallDate().getTime()));
         ps.setString(CLID_INDEX, item.getClid());
         ps.setString(SRC_INDEX, item.getSrc());
         ps.setString(DEST_INDEX, item.getDst());

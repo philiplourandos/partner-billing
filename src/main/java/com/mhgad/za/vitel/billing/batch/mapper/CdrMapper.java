@@ -38,7 +38,7 @@ public class CdrMapper implements RowMapper<Cdr> {
         pojo.setAccountcode(rs.getString(ACC_CODE_COLUMN_NAME));
         pojo.setAmaflags(rs.getInt(AMA_FLAGS_COLUMN_NAME));
         pojo.setBillsec(rs.getInt(BILLING_SECONDS_COLUMN_NAME));
-        pojo.setCallDate(rs.getDate(CALL_DATE_COLUMN_NAME));
+        pojo.setCallDate(rs.getTimestamp(CALL_DATE_COLUMN_NAME));
         pojo.setChannel(rs.getString(CHANNEL_COLUMN_NAME));
         pojo.setClid(rs.getString(CLID_COLUMN_NAME));
         pojo.setCost(rs.getDouble(COST_COLUMN_NAME));
