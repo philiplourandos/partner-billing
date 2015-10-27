@@ -84,6 +84,8 @@ public class SiteSupplierTasklet implements Tasklet, InitializingBean {
                 new File(props.getOutputPath(), next.getOutputFile()));
         writer.setResource(outputFileRes);
 
+        LOG.info("Writing file: {}", next.getOutputFile());
+
         return response;
     }
 
