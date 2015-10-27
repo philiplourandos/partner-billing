@@ -101,13 +101,14 @@ public class SqlConst {
             + "     site s";
     
     public static final String FILE_OUT_CDR_RECORDS_WHERE =
-            "   s.name = :site"
-            + " AND "
-            + " p.site_id = s.id "
-            + " AND "
-            + " r.accountcode = p.accountcode"
-            + " AND "
-            + " s.id = r.site_id "
-            + " AND "
-            + " r.calldate BETWEEN :startdate AND :enddate";
+            "   WHERE "
+            + "     s.name = :site"
+            + "     AND "
+            + "     p.site_id = s.id "
+            + "     AND "
+            + "     r.accountcode = p.accountcode"
+            + "     AND "
+            + "     s.id = r.site_id "
+            + "     AND "
+            + "     r.calldate BETWEEN :startdate AND :enddate";
 }
