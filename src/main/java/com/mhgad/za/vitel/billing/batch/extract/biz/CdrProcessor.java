@@ -1,6 +1,6 @@
-package com.mhgad.za.vitel.billing.batch.biz;
+package com.mhgad.za.vitel.billing.batch.extract.biz;
 
-import com.mhgad.za.vitel.billing.batch.model.Cdr;
+import com.mhgad.za.vitel.billing.batch.extract.model.Cdr;
 import java.text.DecimalFormat;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Value;

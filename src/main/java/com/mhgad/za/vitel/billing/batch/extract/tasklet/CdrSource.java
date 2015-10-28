@@ -1,4 +1,4 @@
-package com.mhgad.za.vitel.billing.batch.tasklet;
+package com.mhgad.za.vitel.billing.batch.extract.tasklet;
 
 import javax.sql.DataSource;
 

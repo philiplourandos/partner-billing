@@ -1,13 +1,13 @@
-package com.mhgad.za.vitel.billing.batch;
+package com.mhgad.za.vitel.billing.batch.extract;
 
-import com.mhgad.za.vitel.billing.batch.biz.CdrFieldExtractor;
-import com.mhgad.za.vitel.billing.batch.biz.CdrProcessor;
-import com.mhgad.za.vitel.billing.batch.decision.NextDatasourceDecision;
-import com.mhgad.za.vitel.billing.batch.decision.NextSiteDecision;
-import com.mhgad.za.vitel.billing.batch.mapper.CdrMapper;
-import com.mhgad.za.vitel.billing.batch.model.Cdr;
-import com.mhgad.za.vitel.billing.batch.tasklet.DatasourceSupplierTasklet;
-import com.mhgad.za.vitel.billing.batch.tasklet.SiteSupplierTasklet;
+import com.mhgad.za.vitel.billing.batch.extract.biz.CdrFieldExtractor;
+import com.mhgad.za.vitel.billing.batch.extract.biz.CdrProcessor;
+import com.mhgad.za.vitel.billing.batch.extract.decision.NextDatasourceDecision;
+import com.mhgad.za.vitel.billing.batch.extract.decision.NextSiteDecision;
+import com.mhgad.za.vitel.billing.batch.extract.mapper.CdrMapper;
+import com.mhgad.za.vitel.billing.batch.extract.model.Cdr;
+import com.mhgad.za.vitel.billing.batch.extract.tasklet.DatasourceSupplierTasklet;
+import com.mhgad.za.vitel.billing.batch.extract.tasklet.SiteSupplierTasklet;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.text.SimpleDateFormat;

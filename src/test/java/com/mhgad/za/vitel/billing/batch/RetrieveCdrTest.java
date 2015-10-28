@@ -1,8 +1,10 @@
 package com.mhgad.za.vitel.billing.batch;
 
-import com.mhgad.za.vitel.billing.batch.model.Cdr;
+import com.mhgad.za.vitel.billing.batch.extract.PartnerBillingConfig;
+import com.mhgad.za.vitel.billing.batch.extract.PartnerBillingConst;
+import com.mhgad.za.vitel.billing.batch.extract.model.Cdr;
 import com.mhgad.za.vitel.billing.batch.repo.TestRepo;
-import com.mhgad.za.vitel.billing.batch.tasklet.DatasourceSupplierTasklet;
+import com.mhgad.za.vitel.billing.batch.extract.tasklet.DatasourceSupplierTasklet;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

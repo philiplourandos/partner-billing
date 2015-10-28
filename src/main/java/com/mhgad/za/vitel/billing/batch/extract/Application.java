@@ -1,4 +1,4 @@
-package com.mhgad.za.vitel.billing.batch;
+package com.mhgad.za.vitel.billing.batch.extract;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

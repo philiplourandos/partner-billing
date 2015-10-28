@@ -1,4 +1,4 @@
-package com.mhgad.za.vitel.billing.batch.model;
+package com.mhgad.za.vitel.billing.batch.extract.model;
 
 import java.sql.Timestamp;
 

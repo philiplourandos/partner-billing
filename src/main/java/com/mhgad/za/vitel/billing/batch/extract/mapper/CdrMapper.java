@@ -1,6 +1,6 @@
-package com.mhgad.za.vitel.billing.batch.mapper;
+package com.mhgad.za.vitel.billing.batch.extract.mapper;
 
-import com.mhgad.za.vitel.billing.batch.model.Cdr;
+import com.mhgad.za.vitel.billing.batch.extract.model.Cdr;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;

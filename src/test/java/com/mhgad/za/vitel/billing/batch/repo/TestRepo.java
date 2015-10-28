@@ -1,8 +1,8 @@
 package com.mhgad.za.vitel.billing.batch.repo;
 
-import com.mhgad.za.vitel.billing.batch.SqlConst;
-import com.mhgad.za.vitel.billing.batch.mapper.CdrMapper;
-import com.mhgad.za.vitel.billing.batch.model.Cdr;
+import com.mhgad.za.vitel.billing.batch.extract.SqlConst;
+import com.mhgad.za.vitel.billing.batch.extract.mapper.CdrMapper;
+import com.mhgad.za.vitel.billing.batch.extract.model.Cdr;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcOperations;

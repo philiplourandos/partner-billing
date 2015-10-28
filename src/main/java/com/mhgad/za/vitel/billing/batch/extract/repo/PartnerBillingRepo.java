@@ -1,9 +1,9 @@
-package com.mhgad.za.vitel.billing.batch.repo;
+package com.mhgad.za.vitel.billing.batch.extract.repo;
 
-import com.mhgad.za.vitel.billing.batch.mapper.DbServersMapper;
-import com.mhgad.za.vitel.billing.batch.mapper.SiteMapper;
-import com.mhgad.za.vitel.billing.batch.model.DbServer;
-import com.mhgad.za.vitel.billing.batch.model.Site;
+import com.mhgad.za.vitel.billing.batch.extract.mapper.DbServersMapper;
+import com.mhgad.za.vitel.billing.batch.extract.mapper.SiteMapper;
+import com.mhgad.za.vitel.billing.batch.extract.model.DbServer;
+import com.mhgad.za.vitel.billing.batch.extract.model.Site;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcOperations;

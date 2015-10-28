@@ -1,7 +1,7 @@
-package com.mhgad.za.vitel.billing.batch.decision;
+package com.mhgad.za.vitel.billing.batch.extract.decision;
 
-import com.mhgad.za.vitel.billing.batch.PartnerBillingConst;
-import com.mhgad.za.vitel.billing.batch.tasklet.DatasourceSupplierTasklet;
+import com.mhgad.za.vitel.billing.batch.extract.PartnerBillingConst;
+import com.mhgad.za.vitel.billing.batch.extract.tasklet.SiteSupplierTasklet;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.job.flow.FlowExecutionStatus;
@@ -14,19 +14,19 @@ import org.springframework.stereotype.Component;
  * @author plourand
  */
 @Component
-public class NextDatasourceDecision implements JobExecutionDecider {
+public class NextSiteDecision implements JobExecutionDecider {
 
     @Autowired
-    private DatasourceSupplierTasklet dsSupplier;
-
-    public NextDatasourceDecision() {
+    private SiteSupplierTasklet task;
+    
+    public NextSiteDecision() {
     }
 
     @Override
-    public FlowExecutionStatus decide(JobExecution je, StepExecution se) {
+    public FlowExecutionStatus decide(JobExecution jobExecution, StepExecution stepExecution) {
         FlowExecutionStatus response = new FlowExecutionStatus(PartnerBillingConst.STATUS_CONTINUE);
 
-        if (dsSupplier.getDatasources().isEmpty()) {
+        if( task.getSites().isEmpty()) {
             response = FlowExecutionStatus.COMPLETED;
         }
 
