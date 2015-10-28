@@ -23,7 +23,7 @@ public class Application {
             LOG.error("cdr.start.date and cdr.end.date values must be passed in");
         } else {
             AnnotationConfigApplicationContext context = 
-                    new AnnotationConfigApplicationContext("com.mhgad.za.vitel.billing.batch");
+                    new AnnotationConfigApplicationContext("com.mhgad.za.vitel.billing.batch.extract");
 
             final Job generateReports = context.getBean(Job.class);
             final JobLauncher launcher = context.getBean(JobLauncher.class);
