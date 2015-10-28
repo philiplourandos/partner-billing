@@ -45,7 +45,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
  *
  * @author plourand
  */
-@ComponentScan(basePackages = {"com.mhgad.za.vitel"})
+@ComponentScan(basePackages = {"com.mhgad.za.vitel.billing.extract"})
 @Configuration
 @EnableBatchProcessing
 @EnableAspectJAutoProxy
