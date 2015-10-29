@@ -1,9 +1,9 @@
 package com.mhgad.za.vitel.billing.batch.extract.tasklet;
 
-import com.mhgad.za.vitel.billing.batch.extract.AppProps;
+import com.mhgad.za.vitel.billing.batch.common.AppProps;
 import com.mhgad.za.vitel.billing.batch.extract.biz.CdrPrepStatementSetter;
 import com.mhgad.za.vitel.billing.batch.extract.model.DbServer;
-import com.mhgad.za.vitel.billing.batch.extract.repo.PartnerBillingRepo;
+import com.mhgad.za.vitel.billing.batch.common.repo.PartnerBillingRepo;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.util.LinkedList;

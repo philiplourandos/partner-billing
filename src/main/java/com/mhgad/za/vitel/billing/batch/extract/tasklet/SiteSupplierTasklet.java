@@ -1,8 +1,8 @@
 package com.mhgad.za.vitel.billing.batch.extract.tasklet;
 
-import com.mhgad.za.vitel.billing.batch.extract.AppProps;
+import com.mhgad.za.vitel.billing.batch.common.AppProps;
 import com.mhgad.za.vitel.billing.batch.extract.model.Site;
-import com.mhgad.za.vitel.billing.batch.extract.repo.PartnerBillingRepo;
+import com.mhgad.za.vitel.billing.batch.common.repo.PartnerBillingRepo;
 import java.io.File;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
