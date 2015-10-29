@@ -1,5 +1,7 @@
 package com.mhgad.za.vitel.billing.batch.extract;
 
+import com.mhgad.za.vitel.billing.batch.common.SqlConst;
+import com.mhgad.za.vitel.billing.batch.common.AppProps;
 import com.mhgad.za.vitel.billing.batch.extract.biz.CdrFieldExtractor;
 import com.mhgad.za.vitel.billing.batch.extract.biz.CdrProcessor;
 import com.mhgad.za.vitel.billing.batch.extract.decision.NextDatasourceDecision;
@@ -45,7 +47,8 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
  *
  * @author plourand
  */
-@ComponentScan(basePackages = {"com.mhgad.za.vitel.billing.extract"})
+@ComponentScan(basePackages = {"com.mhgad.za.vitel.billing.batch.extract",
+    "com.mhgad.za.vitel.billing.batch.common"})
 @Configuration
 @EnableBatchProcessing
 @EnableAspectJAutoProxy
