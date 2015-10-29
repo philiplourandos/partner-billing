@@ -1,6 +1,6 @@
 package com.mhgad.za.vitel.billing.batch.repo;
 
-import com.mhgad.za.vitel.billing.batch.extract.SqlConst;
+import com.mhgad.za.vitel.billing.batch.common.SqlConst;
 import com.mhgad.za.vitel.billing.batch.extract.mapper.CdrMapper;
 import com.mhgad.za.vitel.billing.batch.extract.model.Cdr;
 import java.util.List;
