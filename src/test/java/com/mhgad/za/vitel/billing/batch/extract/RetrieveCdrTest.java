@@ -1,14 +1,12 @@
 package com.mhgad.za.vitel.billing.batch.extract;
 
+import com.mhgad.za.vitel.billing.batch.common.TestConfiguration;
 import com.mhgad.za.vitel.billing.batch.extract.model.Cdr;
 import com.mhgad.za.vitel.billing.batch.common.repo.TestRepo;
 import com.mhgad.za.vitel.billing.batch.extract.tasklet.DatasourceSupplierTasklet;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
@@ -20,6 +18,7 @@ import org.springframework.batch.core.JobExecutionException;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -27,7 +26,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import org.springframework.core.io.ClassPathResource;
 
 /**
  *
