@@ -16,8 +16,8 @@ ALTER TABLE aspivia ADD CONSTRAINT fk_site_id FOREIGN KEY (Site_id) REFERENCES s
 INSERT INTO db_servers(jdbc_url, jdbc_username, jdbc_password, site_id) VALUES('jdbc:h2:mem:test;SCHEMA=cdrjhb;DB_CLOSE_DELAY=-1', 'sa', '', 1);
 INSERT INTO db_servers(jdbc_url, jdbc_username, jdbc_password, site_id) VALUES('jdbc:h2:mem:test;SCHEMA=cdrcpt;DB_CLOSE_DELAY=-1', 'sa', '', 2);
 INSERT INTO db_servers(jdbc_url, jdbc_username, jdbc_password, site_id) VALUES('jdbc:h2:mem:test;SCHEMA=cdrdurb;DB_CLOSE_DELAY=-1', 'sa', '', 1);
-INSERT INTO site (id, name, description, outputFile) VALUES (1, 'CPT', 'Cape Town', 'output/Di_Mhg-CTAccounts_12345_1234');
-INSERT INTO site (id, name, description, outputFile) VALUES (2, 'JHB', 'Braamfontein', 'output/Di_Mhg-JBAccounts_12345_1234');
+INSERT INTO site (id, name, description, outputFile) VALUES (1, 'CPT', 'Cape Town', 'test-classes/Di_Mhg-CTAccounts_12345_1234');
+INSERT INTO site (id, name, description, outputFile) VALUES (2, 'JHB', 'Braamfontein', 'test-classes/Di_Mhg-JBAccounts_12345_1234');
 INSERT INTO partner (id, site_id, name, description, accountcode) VALUES (1, 1, 'AIDS', 'AIDS', 1);
 INSERT INTO partner (id, site_id, name, description, accountcode) VALUES (2, 2, 'AIDS', 'AIDS', 1);
 INSERT INTO partner (id, site_id, name, description, accountcode) VALUES (3, 1, 'CT Claims', 'CT Claims', 2);
