@@ -1,4 +1,4 @@
-package com.mhgad.za.vitel.billing.batch.extract;
+package com.mhgad.za.vitel.billing.batch.common;
 
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
