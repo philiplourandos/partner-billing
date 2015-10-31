@@ -3,6 +3,7 @@ package com.mhgad.za.vitel.billing.batch.aspivia.components;
 import com.mhgad.za.vitel.billing.batch.aspivia.model.BillingItem;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.database.ItemPreparedStatementSetter;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
  *
  * @author plourand
  */
+@StepScope
 public class AspiviaPrepStatementSetter implements ItemPreparedStatementSetter<BillingItem> {
 
     private static final int INDEX_EXTENSION = 1;
@@ -34,7 +36,7 @@ public class AspiviaPrepStatementSetter implements ItemPreparedStatementSetter<B
         ps.setString(INDEX_EXTENSION, item.getExtension());
         ps.setTimestamp(INDEX_PBX_DATE_TIME, item.getPbxDateTime());
         ps.setInt(INDEX_DURATION, item.getCallDuration());
-        ps.setString(INDEX_ACC_CODE, item.getAccountCode());
+        ps.setInt(INDEX_ACC_CODE, item.getAccountCode());
         ps.setString(INDEX_DIGITS, item.getDigits());
         ps.setBigDecimal(INDEX_COST, item.getCost());
         ps.setString(INDEX_DEST, item.getDestination());
