@@ -22,7 +22,7 @@ public class SummaryOutputTasklet implements Tasklet {
 
     private static final Logger LOG = LogManager.getLogger(SummaryOutputTasklet.class);
 
-    @Value("#{jobParameters['output.path']}")
+    @Value("#{jobParameters['output.file.path']}")
     private String outputPath;
 
     public SummaryOutputTasklet() {
@@ -39,6 +39,7 @@ public class SummaryOutputTasklet implements Tasklet {
         } else {
             StringBuilder builder = new StringBuilder(15000);
             builder.append(AspiviaConst.SUMMARY_HEADER);
+            builder.append('\n');
 
             Map<String, Summary> summaries = (Map<String, Summary>) execCtx.get(AspiviaConst.SUMMARY_KEY);
 
