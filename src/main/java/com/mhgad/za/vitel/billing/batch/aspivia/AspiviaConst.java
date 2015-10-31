@@ -12,6 +12,7 @@ public final class AspiviaConst {
     
     public static final String PARAM_INPUT_FILE = "input.file";
     public static final String PARAM_SITE = "site";
+    public static final String PARAM_OUTPUT_FILE_PATH = "output.file.path";
     
     private AspiviaConst() {
     }
