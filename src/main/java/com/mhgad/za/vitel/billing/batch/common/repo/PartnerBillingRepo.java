@@ -72,7 +72,7 @@ public class PartnerBillingRepo {
         return ops.query(FIND_ALL_SITES, new SiteMapper());
     }
 
-    public String findPartnerName(String siteName, String accountCode) {
+    public String findPartnerName(String siteName, Integer accountCode) {
         return ops.queryForObject(FIND_PARTNER_NAME, String.class, siteName, accountCode);
     }
 
