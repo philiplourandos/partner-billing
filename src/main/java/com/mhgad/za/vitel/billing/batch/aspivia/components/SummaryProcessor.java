@@ -6,6 +6,7 @@ import com.mhgad.za.vitel.billing.batch.aspivia.model.BillingItem;
 import com.mhgad.za.vitel.billing.batch.aspivia.model.Summary;
 import com.mhgad.za.vitel.billing.batch.common.repo.PartnerBillingRepo;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +25,7 @@ public class SummaryProcessor implements ItemProcessor<BillingItem, BillingItem>
 
     private static final Logger LOG = LogManager.getLogger(SummaryProcessor.class);
 
-    private Map<String, Summary> summaries;
+    private final Map<Integer, Summary> summaries;
 
     @Autowired
     private PartnerBillingRepo repo;
@@ -33,11 +34,12 @@ public class SummaryProcessor implements ItemProcessor<BillingItem, BillingItem>
     private String site;
     
     public SummaryProcessor() {
+        summaries = new HashMap<>();
     }
 
     @Override
     public BillingItem process(BillingItem item) throws Exception {
-        final String accountCode = item.getAccountCode();
+        final Integer accountCode = item.getAccountCode();
 
         Summary required = null;
 
