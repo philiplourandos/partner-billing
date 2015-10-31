@@ -9,7 +9,7 @@ import java.math.BigInteger;
  */
 public class Summary {
     private Integer numberOfCalls = 0;
-    private String accountCode;
+    private Integer accountCode;
     private String partner;
     private BigDecimal moneyIn = new BigDecimal(BigInteger.ZERO);
     private BigDecimal moneyOut = new BigDecimal(BigInteger.ZERO);
@@ -25,11 +25,11 @@ public class Summary {
         numberOfCalls++;
     }
 
-    public String getAccountCode() {
+    public Integer getAccountCode() {
         return accountCode;
     }
 
-    public void setAccountCode(String accountCode) {
+    public void setAccountCode(Integer accountCode) {
         this.accountCode = accountCode;
     }
 

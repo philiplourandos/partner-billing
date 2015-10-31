@@ -12,7 +12,7 @@ public class BillingItem {
     private String extension;
     private Timestamp pbxDateTime;
     private Integer callDuration;
-    private String accountCode;
+    private Integer accountCode;
     private String digits;
     private BigDecimal cost;
     private String destination;
@@ -46,11 +46,11 @@ public class BillingItem {
         this.callDuration = callDuration;
     }
 
-    public String getAccountCode() {
+    public Integer getAccountCode() {
         return accountCode;
     }
 
-    public void setAccountCode(String accountCode) {
+    public void setAccountCode(Integer accountCode) {
         this.accountCode = accountCode;
     }
 
