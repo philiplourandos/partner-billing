@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.batch.core.BatchStatus;
@@ -19,6 +20,8 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -33,6 +36,7 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestConfiguration.class, PartnerBillingConfig.class})
+@Rollback
 public class RetrieveCdrTest {
     private static final Logger LOG = LogManager.getLogger(RetrieveCdrTest.class);
 
@@ -61,6 +65,9 @@ public class RetrieveCdrTest {
     @Autowired
     private TestRepo testRepo;
 
+    @Autowired
+    private EmbeddedDatabase ds;
+
     @Test
     public void success() throws JobExecutionException, IOException {
         assertEquals(EXPECTED_INITIAL_DATASOURCE_COUNT, dsTasklet.getDatasources().size());
@@ -87,5 +94,10 @@ public class RetrieveCdrTest {
 
         assertEquals(EXPECTED_CPT_FILE_LINES, FileUtils.readLines(cptRes.getFile()).size());
         assertEquals(EXPECTED_JHB_FILE_LINES, FileUtils.readLines(jhbRes.getFile()).size());
+    }
+    
+    @After
+    public void cleanup() {
+        ds.shutdown();
     }
 }
