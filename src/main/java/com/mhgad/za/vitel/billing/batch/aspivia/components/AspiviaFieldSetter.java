@@ -19,15 +19,15 @@ public class AspiviaFieldSetter implements FieldSetMapper<BillingItem> {
 
     private static final Logger LOG = LogManager.getLogger(AspiviaFieldSetter.class);
 
-    private static final int INDEX_EXTENSION = 1;
-    private static final int INDEX_PBX_DATE_TIME = 2;
-    private static final int INDEX_CALL_DURATION = 3;
-    private static final int INDEX_ACCOUNT_CODE = 4;
-    private static final int INDEX_DIGITS = 5;
-    private static final int INDEX_COST = 6;
-    private static final int INDEX_DEST = 7;
-    private static final int INDEX_CARRIER = 8;
-    private static final int INDEX_ATTR = 9;
+    private static final int INDEX_EXTENSION = 0;
+    private static final int INDEX_PBX_DATE_TIME = 1;
+    private static final int INDEX_CALL_DURATION = 2;
+    private static final int INDEX_ACCOUNT_CODE = 3;
+    private static final int INDEX_DIGITS = 4;
+    private static final int INDEX_COST = 5;
+    private static final int INDEX_DEST = 6;
+    private static final int INDEX_CARRIER = 7;
+    private static final int INDEX_ATTR = 8;
 
     private final FastDateFormat formatter = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
 
@@ -43,7 +43,7 @@ public class AspiviaFieldSetter implements FieldSetMapper<BillingItem> {
             entry.setPbxDateTime(new Timestamp(formatter.parse(
                     fieldSet.readString(INDEX_PBX_DATE_TIME)).getTime()));
             entry.setCallDuration(fieldSet.readInt(INDEX_CALL_DURATION));
-            entry.setAccountCode(fieldSet.readString(INDEX_ACCOUNT_CODE));
+            entry.setAccountCode(fieldSet.readInt(INDEX_ACCOUNT_CODE));
             entry.setDigits(fieldSet.readString(INDEX_DIGITS));
             entry.setCost(fieldSet.readBigDecimal(INDEX_COST));
             entry.setDestination(fieldSet.readString(INDEX_DEST));
