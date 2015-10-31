@@ -44,6 +44,8 @@ public class SummaryProcessor implements ItemProcessor<BillingItem, BillingItem>
         Summary required = null;
 
         if (!summaries.containsKey(accountCode)) {
+            LOG.info("Creating summary for acc. code: {}", accountCode);
+            
             required = new Summary();
             required.setAccountCode(accountCode);
             required.setPartner(repo.findPartnerName(site, accountCode));
@@ -52,6 +54,8 @@ public class SummaryProcessor implements ItemProcessor<BillingItem, BillingItem>
         } else {
             required = summaries.get(accountCode);
         }
+
+        required.incCallCount();
 
         BigDecimal cost = item.getCost();
 
