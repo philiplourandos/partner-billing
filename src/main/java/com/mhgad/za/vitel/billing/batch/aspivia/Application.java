@@ -1,5 +1,7 @@
 package com.mhgad.za.vitel.billing.batch.aspivia;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.batch.core.Job;
@@ -13,36 +15,43 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  * @author plourand
  */
 public class Application {
-    
+
     private static final Logger LOG = LogManager.getLogger(Application.class);
 
-    private static final int EXPECTED_ARGS = 3;
-    private static final int INDEX_ASPIVIA_BILLING_FILE = 0;
-    private static final int INDEX_SITE = 1;
-    private static final int INDEX_OUTPUT_SUMMARY_FILE = 2;
+    @Parameter(names = {"--input", "-i"}, description = "Aspivia costed data", required = true)
+    private String inputFile;
     
+    @Parameter(names = {"--site", "-s"}, description = "Site the input file pertains to CTP/JHB", required = true)
+    private String site;
+    
+    @Parameter(names = {"--output", "-o"}, description = "Summary output file", required = true)
+    private String summaryFile;
+    
+    public Application() {
+    }
+
+    public void run() throws Exception {
+        AnnotationConfigApplicationContext context
+                = new AnnotationConfigApplicationContext("com.mhgad.za.vitel.billing.batch.aspivia");
+
+        final Job loadAspiviaDataJob = context.getBean(Job.class);
+        final JobLauncher launcher = context.getBean(JobLauncher.class);
+
+        JobParametersBuilder paramBuilder = new JobParametersBuilder();
+        paramBuilder.addString(AspiviaConst.PARAM_INPUT_FILE, inputFile);
+        paramBuilder.addString(AspiviaConst.PARAM_SITE, site);
+        paramBuilder.addString(AspiviaConst.PARAM_OUTPUT_FILE_PATH, summaryFile);
+
+        JobExecution runStatus = launcher.run(loadAspiviaDataJob, paramBuilder.toJobParameters());
+
+        LOG.info("Run completed, status: {}", runStatus.getExitStatus());
+    }
+
     public static void main(String[] args) throws Exception {
-        if (args.length != EXPECTED_ARGS) {
-            LOG.error("Unexpected number of arguments");
+        Application app = new Application();
+        
+        JCommander cmd = new JCommander(app, args);
 
-            System.exit(-1);
-        } else {
-            AnnotationConfigApplicationContext context = 
-                    new AnnotationConfigApplicationContext("com.mhgad.za.vitel.billing.batch.aspivia");
-            
-            final Job loadAspiviaDataJob = context.getBean(Job.class);
-            final JobLauncher launcher = context.getBean(JobLauncher.class);
-            
-            JobParametersBuilder paramBuilder = new JobParametersBuilder();
-            paramBuilder.addString(AspiviaConst.PARAM_INPUT_FILE,
-                    args[INDEX_ASPIVIA_BILLING_FILE]);
-            paramBuilder.addString(AspiviaConst.PARAM_SITE, args[INDEX_SITE]);
-            paramBuilder.addString(AspiviaConst.PARAM_OUTPUT_FILE_PATH,
-                    args[INDEX_OUTPUT_SUMMARY_FILE]);
-
-            JobExecution runStatus = launcher.run(loadAspiviaDataJob, paramBuilder.toJobParameters());
-
-            LOG.info("Run completed, status: {}", runStatus.getExitStatus());
-        }
+        app.run();
     }
 }
