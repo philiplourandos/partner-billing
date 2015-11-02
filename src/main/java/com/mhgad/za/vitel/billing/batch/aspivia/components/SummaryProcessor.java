@@ -32,7 +32,7 @@ public class SummaryProcessor implements ItemProcessor<BillingItem, BillingItem>
 
     @Value("#{jobParameters['site']}")
     private String site;
-    
+
     public SummaryProcessor() {
         summaries = new HashMap<>();
     }
@@ -55,14 +55,13 @@ public class SummaryProcessor implements ItemProcessor<BillingItem, BillingItem>
             required = summaries.get(accountCode);
         }
 
-        required.incCallCount();
-
         BigDecimal cost = item.getCost();
 
         if (AttributeEnum.INBOUND.equals(item.getAttribute())) {
             required.addInbound(cost);
         } else {
             required.addOutBound(cost);
+            required.incCallCount();
         }
 
         return item;
@@ -71,8 +70,9 @@ public class SummaryProcessor implements ItemProcessor<BillingItem, BillingItem>
     @AfterStep
     public ExitStatus afterStep(StepExecution stepExecution) {
         LOG.info("Storing summaries in execution context");
-        
-        stepExecution.getJobExecution().getExecutionContext().put(AspiviaConst.SUMMARY_KEY, summaries);
+
+        stepExecution.getJobExecution().getExecutionContext().put(
+                AspiviaConst.SUMMARY_KEY, summaries);
 
         return ExitStatus.COMPLETED;
     }
