@@ -25,6 +25,12 @@ public class TestRepo {
             + " " + SqlConst.RETRIEVE_CDR_RECORDS_FROM
             + " WHERE "
             + "     dstchannel = ?";
+    
+    private static final String COUNT_ASPIVIA = 
+            "   SELECT "
+            + "     COUNT(id) "
+            + " FROM "
+            + "     aspivia";
 
     @Autowired
     private JdbcOperations ops;
@@ -35,5 +41,9 @@ public class TestRepo {
         
     public List<Cdr> findByDestChannel(String destChannel) {
         return ops.query(FIND_CDR_BY_DST_CHANNEL, new Object[]{destChannel}, new CdrMapper());
+    }
+    
+    public Integer countAspivia() {
+        return ops.queryForObject(COUNT_ASPIVIA, Integer.class);
     }
 }
