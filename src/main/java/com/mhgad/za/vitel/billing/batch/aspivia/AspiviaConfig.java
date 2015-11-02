@@ -56,7 +56,6 @@ public class AspiviaConfig {
     
     @Bean
     @Profile("prod")
-    @StepScope
     public DataSource datasource() {
         final HikariConfig cfg = new HikariConfig();
         cfg.setJdbcUrl(appProps.getPartnerBillingUrl());
