@@ -44,24 +44,26 @@ public class SummaryOutputTasklet implements Tasklet {
             Map<String, Summary> summaries = (Map<String, Summary>) execCtx.get(AspiviaConst.SUMMARY_KEY);
             
 
-            summaries.entrySet().stream().sorted(
-                    (val1, val2) -> val1.getValue().getPartner().compareTo(val2.getValue().getPartner()))
-                .forEach(val -> {
-                Summary summary = val.getValue();
+            summaries.entrySet()
+                    .stream()
+                    .sorted(
+                        (val1, val2) -> val1.getValue().getPartner().compareTo(val2.getValue().getPartner()))
+                    .forEach(val -> {
+                        Summary summary = val.getValue();
 
-                builder.append(summary.getAccountCode());
-                builder.append(',');
-                builder.append(summary.getPartner());
-                builder.append(',');
-                builder.append(summary.getNumberOfCalls());
-                builder.append(',');
-                builder.append(summary.getMoneyOut());
-                builder.append(',');
-                builder.append(summary.getMoneyIn());
-                builder.append(',');
-                builder.append(summary.getFinalTotal());
-                builder.append('\n');
-            });
+                        builder.append(summary.getAccountCode());
+                        builder.append(',');
+                        builder.append(summary.getPartner());
+                        builder.append(',');
+                        builder.append(summary.getNumberOfCalls());
+                        builder.append(',');
+                        builder.append(summary.getMoneyOut());
+                        builder.append(',');
+                        builder.append(summary.getMoneyIn());
+                        builder.append(',');
+                        builder.append(summary.getFinalTotal());
+                        builder.append('\n');
+                    });
 
             Path outputDir = Paths.get(outputPath);
 
