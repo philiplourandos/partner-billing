@@ -42,8 +42,11 @@ public class SummaryOutputTasklet implements Tasklet {
             builder.append('\n');
 
             Map<String, Summary> summaries = (Map<String, Summary>) execCtx.get(AspiviaConst.SUMMARY_KEY);
+            
 
-            summaries.entrySet().stream().forEach(val -> {
+            summaries.entrySet().stream().sorted(
+                    (val1, val2) -> val1.getValue().getPartner().compareTo(val2.getValue().getPartner()))
+                .forEach(val -> {
                 Summary summary = val.getValue();
 
                 builder.append(summary.getAccountCode());
