@@ -6,6 +6,7 @@ import com.mhgad.za.vitel.billing.batch.common.TestConfiguration;
 import com.mhgad.za.vitel.billing.batch.common.repo.TestRepo;
 import java.io.File;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.Test;
 import org.springframework.batch.core.ExitStatus;
@@ -21,6 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
+import org.springframework.test.annotation.DirtiesContext;
 
 /**
  *
@@ -28,6 +30,7 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AspiviaConfig.class, TestConfiguration.class})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Rollback(true)
 public class SummaryTest {
 
@@ -70,8 +73,23 @@ public class SummaryTest {
         assertEquals(EXPECTED_RECORDS, recordCount);
     }
     
-    @After
-    public void cleanup() {
-        ds.shutdown();
+    @Test
+    public void  failNoParams() throws Exception {
+        JobParametersBuilder paramBuilder = new JobParametersBuilder();
+
+        JobExecution jobExec = launcher.run(summaryJob, paramBuilder.toJobParameters());
+        
+        assertEquals(ExitStatus.FAILED.getExitCode(), jobExec.getExitStatus().getExitCode());
+    }
+
+    @Test
+    public void failMissingParams() throws Exception {
+        JobParametersBuilder paramBuilder = new JobParametersBuilder();
+
+        paramBuilder.addString(AspiviaConst.PARAM_SITE, SITE);
+
+        JobExecution jobExec = launcher.run(summaryJob, paramBuilder.toJobParameters());
+
+        assertEquals(ExitStatus.FAILED.getExitCode(), jobExec.getExitStatus().getExitCode());
     }
 }

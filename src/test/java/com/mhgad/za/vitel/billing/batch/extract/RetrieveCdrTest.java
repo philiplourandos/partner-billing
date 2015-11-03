@@ -29,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import org.springframework.test.annotation.DirtiesContext;
 
 /**
  *
@@ -36,7 +37,7 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestConfiguration.class, PartnerBillingConfig.class})
-@Rollback
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class RetrieveCdrTest {
     private static final Logger LOG = LogManager.getLogger(RetrieveCdrTest.class);
 
@@ -96,8 +97,20 @@ public class RetrieveCdrTest {
         assertEquals(EXPECTED_JHB_FILE_LINES, FileUtils.readLines(jhbRes.getFile()).size());
     }
     
-    @After
-    public void cleanup() {
-        ds.shutdown();
+    @Test
+    public void failNoParams() throws Exception {
+        JobParametersBuilder paramBuilder = new JobParametersBuilder();
+
+        JobExecution jobRun = launcher.run(retrieveCdrsJob, paramBuilder.toJobParameters());
+        assertEquals(BatchStatus.FAILED, jobRun.getStatus());
+    }
+
+    @Test
+    public void failMissingParams() throws Exception {
+        JobParametersBuilder paramBuilder = new JobParametersBuilder();
+        paramBuilder.addString(PartnerBillingConst.PARAM_START_DATE, START_DATE);
+
+        JobExecution jobRun = launcher.run(retrieveCdrsJob, paramBuilder.toJobParameters());
+        assertEquals(BatchStatus.FAILED, jobRun.getStatus());
     }
 }
