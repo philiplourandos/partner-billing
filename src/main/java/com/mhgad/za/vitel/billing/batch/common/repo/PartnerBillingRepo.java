@@ -1,5 +1,7 @@
 package com.mhgad.za.vitel.billing.batch.common.repo;
 
+import com.mhgad.za.vitel.billing.batch.common.mapper.PartnerMapper;
+import com.mhgad.za.vitel.billing.batch.common.model.PartnerMapping;
 import com.mhgad.za.vitel.billing.batch.extract.mapper.DbServersMapper;
 import com.mhgad.za.vitel.billing.batch.extract.mapper.SiteMapper;
 import com.mhgad.za.vitel.billing.batch.extract.model.DbServer;
@@ -57,6 +59,23 @@ public class PartnerBillingRepo {
             + "     site s "
             + " WHERE "
             + "     s.name = ?";
+    
+    private static final String FIND_PARTNERS_BY_ACCOUNT_CODE_QUERY =
+            "   SELECT "
+            + "     p.name AS NAME,"
+            + "     dg.id AS ID,"
+            + "     p.accountCode AS ACCOUNT_CODE "
+            + " FROM "
+            + "     discipline_group dg,"
+            + "     partner p"
+            + " WHERE "
+            + "     dg.site_id = ? "
+            + "     AND "
+            + "     dg.id = p.discipline_id "
+            + "     AND "
+            + "     p.accountCode = ? "
+            + " ORDER BY "
+            + "     p.name";
 
     @Autowired
     private JdbcOperations ops;
@@ -78,5 +97,10 @@ public class PartnerBillingRepo {
 
     public Integer findSiteIdByName(String name) {
         return ops.queryForObject(FIND_SITE_BY_NAME, Integer.class, name);
+    }
+
+    public PartnerMapping findPartnerByAccountCode(Integer siteId, Integer accountCode) {
+        return ops.queryForObject(FIND_PARTNERS_BY_ACCOUNT_CODE_QUERY, new PartnerMapper(),
+                new Object[]{siteId, accountCode});
     }
 }
