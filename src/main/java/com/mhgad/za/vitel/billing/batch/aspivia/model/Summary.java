@@ -1,7 +1,6 @@
 package com.mhgad.za.vitel.billing.batch.aspivia.model;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 /**
  *
@@ -11,8 +10,9 @@ public class Summary {
     private Integer numberOfCalls = 0;
     private Integer accountCode;
     private String partner;
-    private BigDecimal moneyIn = new BigDecimal(BigInteger.ZERO);
-    private BigDecimal moneyOut = new BigDecimal(BigInteger.ZERO);
+    private BigDecimal moneyIn = BigDecimal.ZERO;
+    private BigDecimal moneyOut = BigDecimal.ZERO;
+    private BigDecimal total = BigDecimal.ZERO;
 
     public Summary() {
     }
@@ -49,7 +49,7 @@ public class Summary {
         return moneyOut;
     }
 
-    public BigDecimal getFinalTotal() {
+    public BigDecimal getPrelimTotal() {
         return moneyIn.add(moneyOut);
     }
 
@@ -59,5 +59,46 @@ public class Summary {
     
     public void addOutBound(BigDecimal amount) {
         moneyOut = moneyOut.add(amount);
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    // For testing only
+    public void setMoneyIn(BigDecimal moneyIn) {
+        this.moneyIn = moneyIn;
+    }
+
+    // For testing only
+    public void setMoneyOut(BigDecimal moneyOut) {
+        this.moneyOut = moneyOut;
+    }
+
+    // For testing only
+    public void setNumberOfCalls(Integer numberOfCalls) {
+        this.numberOfCalls = numberOfCalls;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean isEqual = false;
+        
+        if (Summary.class.isAssignableFrom(obj.getClass())) {
+            Summary comparison = (Summary) obj;
+            
+            isEqual = numberOfCalls.equals(comparison.numberOfCalls) 
+                    && accountCode.equals(comparison.accountCode)
+                    && partner.equals(comparison.partner)
+                    && moneyIn.equals(comparison.moneyIn)
+                    && moneyOut.equals(comparison.moneyOut)
+                    && total.equals(comparison.total);
+        }
+
+        return isEqual;
     }
 }
