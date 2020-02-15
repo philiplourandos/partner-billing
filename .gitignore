@@ -16,3 +16,5 @@ hs_err_pid*
 /target/
 /partner-billing-extract/target/
 /partner-billing-aspivia/target/
+/partner-billing-common/target/
+/partner-billing-test/target/
