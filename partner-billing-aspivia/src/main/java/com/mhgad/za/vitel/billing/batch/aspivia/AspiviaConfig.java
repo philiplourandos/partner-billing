@@ -8,8 +8,6 @@ import com.mhgad.za.vitel.billing.batch.aspivia.tasklet.SummaryOutputTasklet;
 import com.mhgad.za.vitel.billing.batch.common.AppProps;
 import com.mhgad.za.vitel.billing.batch.common.SqlConst;
 import com.mhgad.za.vitel.billing.batch.common.repo.PartnerBillingRepo;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -29,23 +27,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
-/**
- *
- * @author plourand
- */
 @ComponentScan(basePackages = {"com.mhgad.za.vitel.billing.batch.aspivia",
     "com.mhgad.za.vitel.billing.batch.common"})
 @Configuration
 @EnableBatchProcessing
 @EnableAspectJAutoProxy
-@PropertySource("classpath:/app.properties")
 public class AspiviaConfig {
 
     @Autowired
@@ -53,27 +41,6 @@ public class AspiviaConfig {
     
     @Autowired
     private PartnerBillingRepo billingRepo;
-    
-    @Bean
-    @Profile("prod")
-    public DataSource datasource() {
-        final HikariConfig cfg = new HikariConfig();
-        cfg.setJdbcUrl(appProps.getPartnerBillingUrl());
-        cfg.setUsername(appProps.getPartnerBillingUsername());
-        cfg.setPassword(appProps.getPartnerBillingPassword());
-        cfg.addDataSourceProperty("cachePrepStmts", appProps.getCachePrepStatements());
-        cfg.addDataSourceProperty("prepStmtCacheSize", appProps.getPrepStatementCacheSize());
-        cfg.addDataSourceProperty("prepStmtCacheSqlLimit", appProps.getPrepStatementCacheSqlLimit());
-
-        HikariDataSource ds = new HikariDataSource(cfg);
-
-        return ds;
-    }
-
-    @Bean
-    public JdbcTemplate template(DataSource ds) {
-        return new JdbcTemplate(ds);
-    }
 
     @Bean
     @StepScope
@@ -145,15 +112,5 @@ public class AspiviaConfig {
                 .start(findSiteIdStep)
                 .next(processFileStep)
                 .next(outputSummary).build();
-    }
-
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propCfg() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }
-    
-    @Bean
-    public DataSourceTransactionManager transactionManager(DataSource datasource) {
-        return new DataSourceTransactionManager(datasource);
     }
 }
