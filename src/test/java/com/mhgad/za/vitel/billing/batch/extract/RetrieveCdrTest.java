@@ -5,13 +5,13 @@ import com.mhgad.za.vitel.billing.batch.extract.model.Cdr;
 import com.mhgad.za.vitel.billing.batch.common.repo.TestRepo;
 import com.mhgad.za.vitel.billing.batch.extract.tasklet.DatasourceSupplierTasklet;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
-import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -21,21 +21,20 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
  * @author plourand
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TestConfiguration.class, PartnerBillingConfig.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class RetrieveCdrTest {
@@ -90,11 +89,11 @@ public class RetrieveCdrTest {
         assertFalse(cdrWithNoUuidInitially.isEmpty());
         assertNotNull(cdrWithNoUuidInitially.get(0).getUniqueid());
 
-        ClassPathResource cptRes = new ClassPathResource(CPT_OUTPUT_FILE);
-        ClassPathResource jhbRes = new ClassPathResource(JHB_OUTPUT_FILE);
+        final ClassPathResource cptRes = new ClassPathResource(CPT_OUTPUT_FILE);
+        final ClassPathResource jhbRes = new ClassPathResource(JHB_OUTPUT_FILE);
 
-        assertEquals(EXPECTED_CPT_FILE_LINES, FileUtils.readLines(cptRes.getFile()).size());
-        assertEquals(EXPECTED_JHB_FILE_LINES, FileUtils.readLines(jhbRes.getFile()).size());
+        assertEquals(EXPECTED_CPT_FILE_LINES, Files.readAllLines(Paths.get(cptRes.getURI())).size());
+        assertEquals(EXPECTED_JHB_FILE_LINES, Files.readAllLines(Paths.get(jhbRes.getURI())).size());
     }
     
     @Test

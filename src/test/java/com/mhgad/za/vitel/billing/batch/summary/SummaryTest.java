@@ -10,13 +10,13 @@ import com.mhgad.za.vitel.billing.batch.common.repo.TestRepo;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import org.apache.commons.io.FileUtils;
-import org.junit.runner.RunWith;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -24,20 +24,19 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
  * @author plourand
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {AspiviaConfig.class, TestConfiguration.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Rollback(true)
@@ -108,14 +107,15 @@ public class SummaryTest {
     
     @Test
     public void successfullyGenerateTotals() throws IOException {
-        SummaryOutputTasklet summaryTasklet = new SummaryOutputTasklet();
+        final SummaryOutputTasklet summaryTasklet = new SummaryOutputTasklet();
         summaryTasklet.setPartnerRepo(partnerRepo);
         summaryTasklet.setSiteId(SITE_ID);
 
-        List<String> lines = FileUtils.readLines(summaryDataFile.getFile());
+        final List<String> lines =
+                Files.readAllLines(Paths.get(summaryDataFile.getURI()), StandardCharsets.UTF_8);
 
-        List<Summary> inputData = new ArrayList<>();
-        List<Summary> expectedValues = new ArrayList<>();
+        final List<Summary> inputData = new ArrayList<>();
+        final List<Summary> expectedValues = new ArrayList<>();
 
         lines.forEach(line -> {
             String[] values = line.split(",");

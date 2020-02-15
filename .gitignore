@@ -14,3 +14,5 @@ hs_err_pid*
 /.gradle/**/*
 /.nb-gradle/
 /target/
+/partner-billing-extract/target/
+/partner-billing-aspivia/target/
