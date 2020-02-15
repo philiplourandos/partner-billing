@@ -1,9 +1,5 @@
 package com.mhgad.za.vitel.billing.batch.extract.model;
 
-/**
- *
- * @author plourand
- */
 public class DbServer {
     private Integer id;
     private String url;

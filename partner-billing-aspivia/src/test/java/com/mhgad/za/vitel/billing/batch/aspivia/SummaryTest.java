@@ -1,4 +1,4 @@
-package com.mhgad.za.vitel.billing.batch.summary;
+package com.mhgad.za.vitel.billing.batch.aspivia;
 
 import com.mhgad.za.vitel.billing.batch.aspivia.AspiviaConst;
 import com.mhgad.za.vitel.billing.batch.aspivia.model.Summary;
@@ -23,8 +23,6 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,39 +30,37 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@Rollback(true)
 public class SummaryTest {
 
     private static final String OUT_FILE_NAME = "summary-cpt.csv";
-    
+
     private final ClassPathResource aspiviaCostedBilling = new ClassPathResource("aspivia-costed-billing.csv");
     private final ClassPathResource summaryDataFile = new ClassPathResource("summary-calc-test.csv");
-    
+
     private static final String SITE = "CPT";
     private static final Integer SITE_ID = 1;
-    
+
     private static final Integer EXPECTED_RECORDS = 22;
     
     @Autowired
     private JobLauncher launcher;
-    
+
     @Autowired
     private Job summaryJob;
-    
+
     @Autowired
     private TestRepo testRepo;
-    
+
     @Autowired
     private PartnerBillingRepo partnerRepo;
-    
+
     @Test
     public void success() throws Exception {
-        File file = aspiviaCostedBilling.getFile();
-        
-        File outputFile = new File(file.getParentFile(), OUT_FILE_NAME);
-        
-        JobParametersBuilder paramBuilder = new JobParametersBuilder();
+        final File file = aspiviaCostedBilling.getFile();
+
+        final File outputFile = new File(file.getParentFile(), OUT_FILE_NAME);
+
+        final JobParametersBuilder paramBuilder = new JobParametersBuilder();
         paramBuilder.addString(AspiviaConst.PARAM_INPUT_FILE, file.getPath());
         paramBuilder.addString(AspiviaConst.PARAM_SITE, SITE);
         paramBuilder.addString(AspiviaConst.PARAM_OUTPUT_FILE_PATH, outputFile.getPath());

@@ -5,10 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
 
-/**
- *
- * @author plourand
- */
 public class CdrMapper implements RowMapper<Cdr> {
 
     private static final String UNIQUE_ID_COLUMN_NAME = "uniqueid";

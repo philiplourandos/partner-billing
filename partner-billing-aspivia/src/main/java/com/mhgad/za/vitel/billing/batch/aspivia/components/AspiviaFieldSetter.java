@@ -11,10 +11,6 @@ import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.FieldSet;
 import org.springframework.validation.BindException;
 
-/**
- *
- * @author plourand
- */
 public class AspiviaFieldSetter implements FieldSetMapper<BillingItem> {
 
     private static final Logger LOG = LogManager.getLogger(AspiviaFieldSetter.class);

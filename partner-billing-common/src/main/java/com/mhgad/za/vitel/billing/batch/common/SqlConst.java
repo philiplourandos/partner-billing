@@ -1,9 +1,5 @@
 package com.mhgad.za.vitel.billing.batch.common;
 
-/**
- *
- * @author plourand
- */
 public final class SqlConst {
 
     public static final String RETRIEVE_CDR_RECORDS_SELECT = 

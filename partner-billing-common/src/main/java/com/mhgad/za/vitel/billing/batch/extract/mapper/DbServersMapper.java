@@ -5,10 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
 
-/**
- *
- * @author plourand
- */
 public class DbServersMapper implements RowMapper<DbServer> {
     private static final int ID_INDEX = 1;
     private static final int URL_INDEX = 2;

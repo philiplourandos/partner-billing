@@ -11,7 +11,6 @@ import com.mhgad.za.vitel.billing.batch.common.repo.PartnerBillingRepo;
 import javax.sql.DataSource;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -26,14 +25,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.io.FileSystemResource;
 
 @ComponentScan(basePackages = {"com.mhgad.za.vitel.billing.batch.aspivia",
     "com.mhgad.za.vitel.billing.batch.common"})
 @Configuration
-@EnableBatchProcessing
-@EnableAspectJAutoProxy
 public class AspiviaConfig {
 
     @Autowired

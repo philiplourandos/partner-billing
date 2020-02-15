@@ -17,10 +17,6 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-/**
- *
- * @author plourand
- */
 public class SummaryProcessor implements ItemProcessor<BillingItem, BillingItem> {
 
     private static final Logger LOG = LogManager.getLogger(SummaryProcessor.class);

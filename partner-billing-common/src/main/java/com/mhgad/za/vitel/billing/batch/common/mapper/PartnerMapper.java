@@ -5,10 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
 
-/**
- *
- * @author plourand
- */
 public class PartnerMapper implements RowMapper<PartnerMapping> {
 
     private static final String COLUMN_NAME = "NAME";

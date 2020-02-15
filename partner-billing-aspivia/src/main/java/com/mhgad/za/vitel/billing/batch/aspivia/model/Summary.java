@@ -2,10 +2,6 @@ package com.mhgad.za.vitel.billing.batch.aspivia.model;
 
 import java.math.BigDecimal;
 
-/**
- *
- * @author plourand
- */
 public class Summary {
     private Integer numberOfCalls = 0;
     private Integer accountCode;

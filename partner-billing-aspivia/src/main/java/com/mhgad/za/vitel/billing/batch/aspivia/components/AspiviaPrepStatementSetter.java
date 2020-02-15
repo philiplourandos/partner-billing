@@ -7,10 +7,6 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.database.ItemPreparedStatementSetter;
 import org.springframework.beans.factory.annotation.Value;
 
-/**
- *
- * @author plourand
- */
 @StepScope
 public class AspiviaPrepStatementSetter implements ItemPreparedStatementSetter<BillingItem> {
 

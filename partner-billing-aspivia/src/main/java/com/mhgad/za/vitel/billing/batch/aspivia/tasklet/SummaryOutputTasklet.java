@@ -5,6 +5,7 @@ import com.mhgad.za.vitel.billing.batch.aspivia.model.Summary;
 import com.mhgad.za.vitel.billing.batch.common.model.PartnerMapping;
 import com.mhgad.za.vitel.billing.batch.common.repo.PartnerBillingRepo;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,10 +22,6 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-/**
- *
- * @author plourand
- */
 public class SummaryOutputTasklet implements Tasklet {
 
     private static final Logger LOG = LogManager.getLogger(SummaryOutputTasklet.class);
@@ -83,7 +80,7 @@ public class SummaryOutputTasklet implements Tasklet {
 
             Path outputDir = Paths.get(outputPath);
 
-            Files.write(outputDir, builder.toString().getBytes("UTF8"));
+            Files.write(outputDir, builder.toString().getBytes(StandardCharsets.UTF_8));
         }
 
         return RepeatStatus.FINISHED;

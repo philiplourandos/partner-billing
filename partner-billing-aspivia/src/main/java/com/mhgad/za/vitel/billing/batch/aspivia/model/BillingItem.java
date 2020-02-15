@@ -4,10 +4,6 @@ import com.mhgad.za.vitel.billing.batch.aspivia.AttributeEnum;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-/**
- *
- * @author plourand
- */
 public class BillingItem {
     private String extension;
     private Timestamp pbxDateTime;

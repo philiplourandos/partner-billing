@@ -2,10 +2,6 @@ package com.mhgad.za.vitel.billing.batch.extract.model;
 
 import java.sql.Timestamp;
 
-/**
- *
- * @author plourand
- */
 public class Cdr {
     private Timestamp callDate;
 	private String clid;

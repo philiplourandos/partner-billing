@@ -1,9 +1,5 @@
 package com.mhgad.za.vitel.billing.batch.common.model;
 
-/**
- *
- * @author plourand
- */
 public class PartnerMapping {
 
     private String name;
