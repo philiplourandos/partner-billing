@@ -18,3 +18,4 @@ hs_err_pid*
 /partner-billing-aspivia/target/
 /partner-billing-common/target/
 /partner-billing-test/target/
+/partner-billing-db/target/
