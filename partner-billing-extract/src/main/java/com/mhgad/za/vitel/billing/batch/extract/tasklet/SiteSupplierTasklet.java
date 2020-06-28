@@ -3,10 +3,12 @@ package com.mhgad.za.vitel.billing.batch.extract.tasklet;
 import com.mhgad.za.vitel.billing.batch.extract.model.Site;
 import com.mhgad.za.vitel.billing.batch.common.repo.PartnerBillingRepo;
 import com.mhgad.za.vitel.billing.batch.extract.ExtractProps;
+import com.mhgad.za.vitel.billing.batch.extract.PartnerBillingConst;
 import java.io.File;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,9 +61,13 @@ public class SiteSupplierTasklet implements Tasklet, InitializingBean {
 
         final Site next = sites.poll();
 
+        final Map<String, Object> jobsParams = chunkContext.getStepContext().getJobParameters();
+        final String startDate = (String) jobsParams.get(PartnerBillingConst.PARAM_START_DATE);
+        final String endDate = (String) jobsParams.get(PartnerBillingConst.PARAM_END_DATE);
+
         final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-        final long start = dateFormatter.parse(appProps.getStartDate()).getTime();
-        final long end = dateFormatter.parse(appProps.getEndDate()).getTime();
+        final long start = dateFormatter.parse(startDate).getTime();
+        final long end = dateFormatter.parse(endDate).getTime();
 
         reader.setPreparedStatementSetter((ps) -> {
             ps.setString(1, next.getName());
