@@ -1,9 +1,9 @@
 package com.mhgad.za.vitel.billing.batch.extract.tasklet;
 
-import com.mhgad.za.vitel.billing.batch.common.AppProps;
 import com.mhgad.za.vitel.billing.batch.extract.biz.CdrPrepStatementSetter;
 import com.mhgad.za.vitel.billing.batch.extract.model.DbServer;
 import com.mhgad.za.vitel.billing.batch.common.repo.PartnerBillingRepo;
+import com.mhgad.za.vitel.billing.batch.extract.ExtractProps;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.util.LinkedList;
@@ -40,7 +40,7 @@ public class DatasourceSupplierTasklet implements Tasklet, InitializingBean {
     private JdbcPagingItemReader cdrReader;
 
     @Autowired
-    private AppProps props;
+    private ExtractProps props;
 
     @Autowired
     private JdbcBatchItemWriter writer;
@@ -50,8 +50,8 @@ public class DatasourceSupplierTasklet implements Tasklet, InitializingBean {
     }
 
     @Override
-    public RepeatStatus execute(StepContribution sc, ChunkContext cc) throws Exception {
-        CdrSource next = cdrSources.poll();
+    public RepeatStatus execute(final StepContribution sc, final ChunkContext cc) throws Exception {
+        final CdrSource next = cdrSources.poll();
 
         final DataSource ds = next.getDs();
 
@@ -69,20 +69,20 @@ public class DatasourceSupplierTasklet implements Tasklet, InitializingBean {
     public void afterPropertiesSet() throws Exception {
         final List<DbServer> dbServers = dbServersRepo.findAllServers();
 
-        for (DbServer currentServer : dbServers) {
+        dbServers.forEach(s -> {
             final HikariConfig cfg = new HikariConfig();
-            cfg.setJdbcUrl(currentServer.getUrl());
-            cfg.setUsername(currentServer.getUsername());
-            cfg.setPassword(currentServer.getPassword());
+            cfg.setJdbcUrl(s.getUrl());
+            cfg.setUsername(s.getUsername());
+            cfg.setPassword(s.getPassword());
             cfg.addDataSourceProperty("cachePrepStmts", props.getCachePrepStatements());
             cfg.addDataSourceProperty("prepStmtCacheSize", props.getPrepStatementCacheSize());
             cfg.addDataSourceProperty("prepStmtCacheSqlLimit", props.getPrepStatementCacheSqlLimit());
-            cfg.setPoolName(currentServer.getUrl());
+            cfg.setPoolName(s.getUrl());
 
             final HikariDataSource ds = new HikariDataSource(cfg);
 
-            cdrSources.add(new CdrSource(ds, currentServer.getSiteId()));
-        }
+            cdrSources.add(new CdrSource(ds, s.getSiteId()));
+        });
 
         LOG.info("Loaded {} datasources", cdrSources.size());
     }
