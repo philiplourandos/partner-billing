@@ -5,7 +5,6 @@ import com.mhgad.za.vitel.billing.batch.aspivia.components.AspiviaPrepStatementS
 import com.mhgad.za.vitel.billing.batch.aspivia.components.SummaryProcessor;
 import com.mhgad.za.vitel.billing.batch.aspivia.model.BillingItem;
 import com.mhgad.za.vitel.billing.batch.aspivia.tasklet.SummaryOutputTasklet;
-import com.mhgad.za.vitel.billing.batch.common.AppProps;
 import com.mhgad.za.vitel.billing.batch.common.SqlConst;
 import com.mhgad.za.vitel.billing.batch.common.repo.PartnerBillingRepo;
 import javax.sql.DataSource;
@@ -33,7 +32,7 @@ import org.springframework.core.io.FileSystemResource;
 public class AspiviaConfig {
 
     @Autowired
-    private AppProps appProps;
+    private AspiviaProps appProps;
     
     @Autowired
     private PartnerBillingRepo billingRepo;
