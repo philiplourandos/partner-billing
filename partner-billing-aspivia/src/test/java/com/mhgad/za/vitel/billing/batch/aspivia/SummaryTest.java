@@ -1,6 +1,5 @@
 package com.mhgad.za.vitel.billing.batch.aspivia;
 
-import com.mhgad.za.vitel.billing.batch.aspivia.AspiviaConst;
 import com.mhgad.za.vitel.billing.batch.aspivia.model.Summary;
 import com.mhgad.za.vitel.billing.batch.aspivia.tasklet.SummaryOutputTasklet;
 import com.mhgad.za.vitel.billing.batch.common.repo.PartnerBillingRepo;
@@ -23,6 +22,7 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@ActiveProfiles({"test"})
 public class SummaryTest {
 
     private static final String OUT_FILE_NAME = "summary-cpt.csv";
