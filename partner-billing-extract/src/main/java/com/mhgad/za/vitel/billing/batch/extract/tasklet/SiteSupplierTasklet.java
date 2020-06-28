@@ -6,9 +6,7 @@ import com.mhgad.za.vitel.billing.batch.common.repo.PartnerBillingRepo;
 import java.io.File;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Queue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +14,6 @@ import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.InitializingBean;
@@ -68,14 +65,14 @@ public class SiteSupplierTasklet implements Tasklet, InitializingBean {
     }
 
     @Override
-    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+    public RepeatStatus execute(final StepContribution contribution, final ChunkContext chunkContext) throws Exception {
         RepeatStatus response = RepeatStatus.FINISHED;
 
-        Site next = sites.poll();
+        final Site next = sites.poll();
 
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-        long start = dateFormatter.parse(appProps.getStartDate()).getTime();
-        long end = dateFormatter.parse(appProps.getEndDate()).getTime();
+        final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        final long start = dateFormatter.parse(appProps.getStartDate()).getTime();
+        final long end = dateFormatter.parse(appProps.getEndDate()).getTime();
 
         reader.setPreparedStatementSetter((ps) -> {
             ps.setString(1, next.getName());
@@ -83,7 +80,7 @@ public class SiteSupplierTasklet implements Tasklet, InitializingBean {
             ps.setDate(3, new Date(end));
         });
 
-        FileSystemResource outputFileRes = new FileSystemResource(
+        final FileSystemResource outputFileRes = new FileSystemResource(
                 new File(props.getOutputPath(), next.getOutputFile()));
         writer.setResource(outputFileRes);
 

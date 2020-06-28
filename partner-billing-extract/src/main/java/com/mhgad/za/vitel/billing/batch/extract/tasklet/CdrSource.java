@@ -7,14 +7,11 @@ import javax.sql.DataSource;
  * @author plourand
  */
 public class CdrSource {
-    private DataSource ds;
+    private final DataSource ds;
     
-    private Integer siteId;
+    private final Integer siteId;
 
-    public CdrSource() {
-    }
-
-    public CdrSource(DataSource ds, Integer siteId) {
+    public CdrSource(final DataSource ds, final Integer siteId) {
         this.ds = ds;
         this.siteId = siteId;
     }
@@ -23,15 +20,7 @@ public class CdrSource {
         return ds;
     }
 
-    public void setDs(DataSource ds) {
-        this.ds = ds;
-    }
-
     public Integer getSiteId() {
         return siteId;
-    }
-
-    public void setSiteId(Integer siteId) {
-        this.siteId = siteId;
     }
 }

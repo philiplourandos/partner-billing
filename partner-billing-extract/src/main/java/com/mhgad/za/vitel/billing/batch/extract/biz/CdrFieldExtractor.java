@@ -19,10 +19,10 @@ public class CdrFieldExtractor implements FieldExtractor<Cdr> {
     }
 
     @Override
-    public Object[] extract(Cdr item) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public Object[] extract(final Cdr item) {
+        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        Object[] values = new Object[FIELD_COUNT];
+        final Object[] values = new Object[FIELD_COUNT];
         values[0] = formatter.format(item.getCallDate());
         values[1] = DOUBLE_QUOTE + item.getClid() + DOUBLE_QUOTE;
         values[2] = DOUBLE_QUOTE + item.getSrc() + DOUBLE_QUOTE;

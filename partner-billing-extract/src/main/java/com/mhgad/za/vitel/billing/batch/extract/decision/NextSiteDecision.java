@@ -23,7 +23,7 @@ public class NextSiteDecision implements JobExecutionDecider {
     }
 
     @Override
-    public FlowExecutionStatus decide(JobExecution jobExecution, StepExecution stepExecution) {
+    public FlowExecutionStatus decide(final JobExecution jobExecution, final StepExecution stepExecution) {
         FlowExecutionStatus response = new FlowExecutionStatus(PartnerBillingConst.STATUS_CONTINUE);
 
         if( task.getSites().isEmpty()) {

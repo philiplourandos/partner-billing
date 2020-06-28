@@ -23,7 +23,7 @@ public class NextDatasourceDecision implements JobExecutionDecider {
     }
 
     @Override
-    public FlowExecutionStatus decide(JobExecution je, StepExecution se) {
+    public FlowExecutionStatus decide(final JobExecution je, final StepExecution se) {
         FlowExecutionStatus response = new FlowExecutionStatus(PartnerBillingConst.STATUS_CONTINUE);
 
         if (dsSupplier.getDatasources().isEmpty()) {

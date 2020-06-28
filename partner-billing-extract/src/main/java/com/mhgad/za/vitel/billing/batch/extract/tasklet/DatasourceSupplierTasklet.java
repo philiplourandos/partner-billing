@@ -67,7 +67,7 @@ public class DatasourceSupplierTasklet implements Tasklet, InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        List<DbServer> dbServers = dbServersRepo.findAllServers();
+        final List<DbServer> dbServers = dbServersRepo.findAllServers();
 
         for (DbServer currentServer : dbServers) {
             final HikariConfig cfg = new HikariConfig();
@@ -79,7 +79,7 @@ public class DatasourceSupplierTasklet implements Tasklet, InitializingBean {
             cfg.addDataSourceProperty("prepStmtCacheSqlLimit", props.getPrepStatementCacheSqlLimit());
             cfg.setPoolName(currentServer.getUrl());
 
-            HikariDataSource ds = new HikariDataSource(cfg);
+            final HikariDataSource ds = new HikariDataSource(cfg);
 
             cdrSources.add(new CdrSource(ds, currentServer.getSiteId()));
         }

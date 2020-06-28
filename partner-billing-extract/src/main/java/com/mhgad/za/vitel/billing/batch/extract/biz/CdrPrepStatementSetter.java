@@ -1,16 +1,11 @@
 package com.mhgad.za.vitel.billing.batch.extract.biz;
 
 import com.mhgad.za.vitel.billing.batch.extract.model.Cdr;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import org.springframework.batch.item.database.ItemPreparedStatementSetter;
 
-/**
- *
- * @author plourand
- */
 public class CdrPrepStatementSetter implements ItemPreparedStatementSetter<Cdr> {
 
     private static final int UNIQUE_ID_INDEX = 1;
@@ -34,12 +29,12 @@ public class CdrPrepStatementSetter implements ItemPreparedStatementSetter<Cdr> 
     
     private Integer siteId;
     
-    public CdrPrepStatementSetter(Integer siteId) {
+    public CdrPrepStatementSetter(final Integer siteId) {
         this.siteId = siteId;
     }
 
     @Override
-    public void setValues(Cdr item, PreparedStatement ps) throws SQLException {
+    public void setValues(final Cdr item, final PreparedStatement ps) throws SQLException {
         ps.setString(UNIQUE_ID_INDEX, item.getUniqueid());
         ps.setTimestamp(CALL_DATE_INDEX, new Timestamp(item.getCallDate().getTime()));
         ps.setString(CLID_INDEX, item.getClid());

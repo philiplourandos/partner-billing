@@ -84,28 +84,28 @@ public class PartnerBillingConfig {
         cfg.addDataSourceProperty("prepStmtCacheSize", appProps.getPrepStatementCacheSize());
         cfg.addDataSourceProperty("prepStmtCacheSqlLimit", appProps.getPrepStatementCacheSqlLimit());
 
-        HikariDataSource ds = new HikariDataSource(cfg);
+        final HikariDataSource ds = new HikariDataSource(cfg);
 
         return ds;
     }
 
     @Bean
-    public JdbcTemplate partnerBillingTemplate(DataSource partnerBillingDs) {
+    public JdbcTemplate partnerBillingTemplate(final DataSource partnerBillingDs) {
         return new JdbcTemplate(partnerBillingDs);
     }
 
     @Bean
-    public JdbcPagingItemReader cdrReader(DataSource partnerBillingDs) throws Exception {
-        SqlPagingQueryProviderFactoryBean queryProvider = new SqlPagingQueryProviderFactoryBean();
+    public JdbcPagingItemReader cdrReader(final DataSource partnerBillingDs) throws Exception {
+        final SqlPagingQueryProviderFactoryBean queryProvider = new SqlPagingQueryProviderFactoryBean();
         queryProvider.setSelectClause(SqlConst.RETRIEVE_CDR_RECORDS_SELECT);
         queryProvider.setFromClause(SqlConst.RETRIEVE_CDR_RECORDS_FROM);
         queryProvider.setWhereClause(SqlConst.RETRIEVE_CDR_RECORDS_WHERE);
         queryProvider.setSortKey("uniqueid");
         queryProvider.setDataSource(partnerBillingDs);
 
-        Map<String, Date> params = new HashMap<>();
+        final Map<String, Date> params = new HashMap<>();
 
-        JdbcPagingItemReader reader = new JdbcPagingItemReader();
+        final JdbcPagingItemReader reader = new JdbcPagingItemReader();
         // Use partner billing for setup, it will be replaced with 1 for the target machines
         reader.setDataSource(partnerBillingDs);
         reader.setFetchSize(appProps.getFetchSize());
@@ -118,8 +118,8 @@ public class PartnerBillingConfig {
     }
 
     @Bean
-    public JdbcBatchItemWriter cdrWriter(DataSource partnerBillingDs) {
-        JdbcBatchItemWriter writer = new JdbcBatchItemWriter();
+    public JdbcBatchItemWriter cdrWriter(final DataSource partnerBillingDs) {
+        final JdbcBatchItemWriter writer = new JdbcBatchItemWriter();
         writer.setDataSource(partnerBillingDs);
         writer.setItemPreparedStatementSetter((item, ps) -> {});
         writer.setSql(SqlConst.WRITE_CDR_QUERY);
@@ -128,8 +128,8 @@ public class PartnerBillingConfig {
     }
 
     @Bean(name = "fileoutReader")
-    public JdbcCursorItemReader fileoutReader(DataSource partnerBillingDs) throws Exception {
-        JdbcCursorItemReader reader = new JdbcCursorItemReader();
+    public JdbcCursorItemReader fileoutReader(final DataSource partnerBillingDs) throws Exception {
+        final JdbcCursorItemReader reader = new JdbcCursorItemReader();
         reader.setFetchSize(appProps.getFetchSize());
         reader.setDataSource(partnerBillingDs);
         reader.setRowMapper(new CdrMapper());
@@ -141,11 +141,11 @@ public class PartnerBillingConfig {
     
     @Bean
     public FlatFileItemWriter<Cdr> fileoutWriter() {
-        DelimitedLineAggregator lineAgg = new DelimitedLineAggregator();
+        final DelimitedLineAggregator lineAgg = new DelimitedLineAggregator();
         lineAgg.setDelimiter(",");
         lineAgg.setFieldExtractor(new CdrFieldExtractor());
         
-        FlatFileItemWriter<Cdr> writer = new FlatFileItemWriter<>();
+        final FlatFileItemWriter<Cdr> writer = new FlatFileItemWriter<>();
         writer.setEncoding("UTF-8");
         writer.setLineAggregator(lineAgg);
 
@@ -153,20 +153,20 @@ public class PartnerBillingConfig {
     }
 
     @Bean
-    public Job createJob(StepBuilderFactory stepBuilderFactory, JobBuilderFactory jobs,
-            DataSource partnerBillingDs) throws Exception {
+    public Job createJob(final StepBuilderFactory stepBuilderFactory, final JobBuilderFactory jobs,
+            final DataSource partnerBillingDs) throws Exception {
         Step getDatasource = stepBuilderFactory.get("getDatasource").tasklet(dsSupplier).build();
         
-        JdbcPagingItemReader reader = cdrReader(partnerBillingDs);
+        final JdbcPagingItemReader reader = cdrReader(partnerBillingDs);
         
-        Step retrieveCdrs = stepBuilderFactory.get("stepRetrieveCdrs")
+        final Step retrieveCdrs = stepBuilderFactory.get("stepRetrieveCdrs")
                 .<Cdr, Cdr>chunk(appProps.getChunkSize())
                 .reader(reader)
                 .processor(costItemProc)
                 .writer(cdrWriter(partnerBillingDs)).build();
 
-        Step getSite = stepBuilderFactory.get("getSites").tasklet(siteSupplier).build();
-        Step writeOutFiles = stepBuilderFactory.get("writeOutFiles")
+        final Step getSite = stepBuilderFactory.get("getSites").tasklet(siteSupplier).build();
+        final Step writeOutFiles = stepBuilderFactory.get("writeOutFiles")
                 .<Cdr, Cdr>chunk(appProps.getChunkSize())
                 .reader(fileoutReader(partnerBillingDs))
                 .writer(fileoutWriter()).build();
@@ -194,12 +194,12 @@ public class PartnerBillingConfig {
     }
 
     @Bean
-    public DataSourceTransactionManager transactionManager(DataSource partnerBillingDs) {
+    public DataSourceTransactionManager transactionManager(final DataSource partnerBillingDs) {
         return new DataSourceTransactionManager(partnerBillingDs);
     }
     
     public Step endStep(StepBuilderFactory stepBuilderFactory) {
-        Tasklet task = (contribution, chunkContext) -> {return RepeatStatus.FINISHED;};
+        final Tasklet task = (contribution, chunkContext) -> {return RepeatStatus.FINISHED;};
         
         return stepBuilderFactory.get("end").tasklet(task).build();
     }
@@ -215,13 +215,13 @@ public class PartnerBillingConfig {
      */
     public Step paramsStep(StepBuilderFactory stepBuilderFactory, JdbcPagingItemReader reader) {
         Tasklet task = (contribution, chunkContext) -> {
-            Map<String, Object> jobsParams = chunkContext.getStepContext().getJobParameters();
+            final Map<String, Object> jobsParams = chunkContext.getStepContext().getJobParameters();
             appProps.setStartDate((String) jobsParams.get(PartnerBillingConst.PARAM_START_DATE));
             appProps.setEndDate((String) jobsParams.get(PartnerBillingConst.PARAM_END_DATE));
             
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-            Map<String, Date> params = new HashMap<>();
+            final Map<String, Date> params = new HashMap<>();
             params.put("start", formatter.parse(appProps.getStartDate()));
             params.put("end", formatter.parse(appProps.getEndDate()));
 

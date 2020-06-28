@@ -25,14 +25,14 @@ public class CdrProcessor implements ItemProcessor<Cdr, Cdr> {
     }
 
     @Override
-    public Cdr process(Cdr item) throws Exception {
+    public Cdr process(final Cdr item) throws Exception {
         final String channel = item.getChannel();
 
         // Calculate cost
         if (channel.startsWith(SIP)) {
-            Double cost = item.getBillsec() * isInboundCost;
+            final Double cost = item.getBillsec() * isInboundCost;
 
-            DecimalFormat formatter = new DecimalFormat("########0.00");
+            final DecimalFormat formatter = new DecimalFormat("########0.00");
             final String cdrCost = formatter.format(cost);
 
             item.setCost(Double.valueOf(cdrCost));
@@ -40,11 +40,11 @@ public class CdrProcessor implements ItemProcessor<Cdr, Cdr> {
 
         // Set unique id
         if (StringUtils.isEmpty(item.getUniqueid())) {
-            StringBuilder uuidGen = new StringBuilder(50);
+            final StringBuilder uuidGen = new StringBuilder(50);
             uuidGen.append(item.getCallDate().getTime());
             uuidGen.append('.');
 
-            DecimalFormat formatter = new DecimalFormat("000000");
+            final DecimalFormat formatter = new DecimalFormat("000000");
             uuidGen.append(formatter.format(COUNTER));
 
             item.setUniqueid(uuidGen.toString());
