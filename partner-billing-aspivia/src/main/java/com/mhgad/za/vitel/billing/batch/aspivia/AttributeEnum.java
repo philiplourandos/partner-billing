@@ -1,9 +1,5 @@
 package com.mhgad.za.vitel.billing.batch.aspivia;
 
-/**
- *
- * @author plourand
- */
 public enum AttributeEnum {
 
     INBOUND(8, "inbound"), OUTBOUND(1, "outbound");

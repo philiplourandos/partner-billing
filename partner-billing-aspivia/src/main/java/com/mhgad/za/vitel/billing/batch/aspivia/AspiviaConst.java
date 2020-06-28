@@ -1,9 +1,5 @@
 package com.mhgad.za.vitel.billing.batch.aspivia;
 
-/**
- *
- * @author plourand
- */
 public final class AspiviaConst {
 
     public static final String SUMMARY_KEY = "aspivia.summaries";
