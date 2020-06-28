@@ -1,7 +1,9 @@
 package com.mhgad.za.vitel.billing.batch.extract;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
 @ConfigurationProperties(prefix = "extract")
 public class ExtractProps {
     private int cachePrepStatements;
