@@ -51,7 +51,7 @@ public class CdrPrepStatementSetter implements ItemPreparedStatementSetter<Cdr> 
         ps.setInt(AMA_FLAGS_INDEX, item.getAmaflags());
         ps.setString(ACCOUNT_CODE_INDEX, item.getAccountcode());
         ps.setString(USERFIELD_INDEX, item.getUserfield());
-        ps.setDouble(COST_INDEX, item.getCost());
+        ps.setBigDecimal(COST_INDEX, item.getCost());
         ps.setInt(SITE_INDEX, siteId);
     }
 }

@@ -1,5 +1,6 @@
 package com.mhgad.za.vitel.billing.batch.extract.model;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 public class Cdr {
@@ -20,7 +21,7 @@ public class Cdr {
     private String accountcode;
     private String uniqueid;
     private String userfield;
-    private Double cost;
+    private BigDecimal cost;
 
     public Cdr() {
     }
@@ -153,11 +154,11 @@ public class Cdr {
         this.userfield = userfield;
     }
 
-    public Double getCost() {
+    public BigDecimal getCost() {
         return cost;
     }
 
-    public void setCost(Double cost) {
+    public void setCost(BigDecimal cost) {
         this.cost = cost;
     }
 

@@ -1,6 +1,7 @@
 package com.mhgad.za.vitel.billing.batch.extract.biz;
 
 import com.mhgad.za.vitel.billing.batch.extract.model.Cdr;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import org.springframework.batch.item.file.transform.FieldExtractor;
 
@@ -9,8 +10,6 @@ public class CdrFieldExtractor implements FieldExtractor<Cdr> {
     private static final int FIELD_COUNT = 17;
     private static final String DOUBLE_QUOTE = "\"";
 
-    private static final Double ZERO = new Double(0.0);
-    
     public CdrFieldExtractor() {
     }
 
@@ -36,8 +35,8 @@ public class CdrFieldExtractor implements FieldExtractor<Cdr> {
         values[14] = DOUBLE_QUOTE + item.getUniqueid() + DOUBLE_QUOTE;
         values[15] = DOUBLE_QUOTE + item.getUserfield() + DOUBLE_QUOTE;
 
-        Double cost = item.getCost();
-        if (cost != null && !ZERO.equals(cost)) {
+        final BigDecimal cost = item.getCost();
+        if (cost != null && !BigDecimal.ZERO.equals(cost)) {
             values[16] = DOUBLE_QUOTE + cost + DOUBLE_QUOTE;
         } else {
             values[16] = DOUBLE_QUOTE + DOUBLE_QUOTE;

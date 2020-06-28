@@ -1,6 +1,7 @@
 package com.mhgad.za.vitel.billing.batch.extract.biz;
 
 import com.mhgad.za.vitel.billing.batch.extract.model.Cdr;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +15,8 @@ public class CdrProcessor implements ItemProcessor<Cdr, Cdr> {
 
     private static final int COUNTER = 0;
     
-    @Value("${is.inbound.cost}")
-    private Double isInboundCost;
+    @Value("${extract.is_inbound_cost}")
+    private BigDecimal isInboundCost;
 
     public CdrProcessor() {
     }
@@ -26,12 +27,9 @@ public class CdrProcessor implements ItemProcessor<Cdr, Cdr> {
 
         // Calculate cost
         if (channel.startsWith(SIP)) {
-            final Double cost = item.getBillsec() * isInboundCost;
+            final BigDecimal cost = isInboundCost.multiply(BigDecimal.valueOf(item.getBillsec()));
 
-            final DecimalFormat formatter = new DecimalFormat("########0.00");
-            final String cdrCost = formatter.format(cost);
-
-            item.setCost(Double.valueOf(cdrCost));
+            item.setCost(cost);
         }
 
         // Set unique id
