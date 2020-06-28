@@ -39,21 +39,21 @@ public class SummaryOutputTasklet implements Tasklet {
     }
 
     @Override
-    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        Map<String, Object> execCtx = chunkContext.getStepContext().getJobExecutionContext();
+    public RepeatStatus execute(final StepContribution contribution, final ChunkContext chunkContext) throws Exception {
+        final Map<String, Object> execCtx = chunkContext.getStepContext().getJobExecutionContext();
 
         if (!execCtx.containsKey(AspiviaConst.SUMMARY_KEY)) {
             LOG.error("Summaries not present!");
 
             throw new RuntimeException("Summaries not present");
         } else {
-            StringBuilder builder = new StringBuilder(15000);
+            final StringBuilder builder = new StringBuilder(15000);
             builder.append(AspiviaConst.SUMMARY_HEADER);
             builder.append('\n');
 
-            Map<Integer, Summary> summaries = (Map<Integer, Summary>) execCtx.get(AspiviaConst.SUMMARY_KEY);
+            final Map<Integer, Summary> summaries = (Map<Integer, Summary>) execCtx.get(AspiviaConst.SUMMARY_KEY);
 
-            List<Summary> calcList = summaries.values()
+            final List<Summary> calcList = summaries.values()
                     .stream()
                     .sorted(
                         (val1, val2) -> val1.getPartner().compareTo(val2.getPartner()))
@@ -78,7 +78,7 @@ public class SummaryOutputTasklet implements Tasklet {
                         builder.append('\n');
                     });
 
-            Path outputDir = Paths.get(outputPath);
+            final Path outputDir = Paths.get(outputPath);
 
             Files.write(outputDir, builder.toString().getBytes(StandardCharsets.UTF_8));
         }
@@ -86,17 +86,17 @@ public class SummaryOutputTasklet implements Tasklet {
         return RepeatStatus.FINISHED;
     }
 
-    public void calculateTotals(List<Summary> summaries) {
+    public void calculateTotals(final List<Summary> summaries) {
         BigDecimal finalTotal = BigDecimal.ZERO;
         PartnerMapping previousPartner = null;
         Summary previousSummary = null;
 
-        Iterator<Summary> summariesItr = summaries.iterator();
+        final Iterator<Summary> summariesItr = summaries.iterator();
 
         while (summariesItr.hasNext()) {
             final Summary summary = summariesItr.next();
 
-            PartnerMapping partner = partnerRepo.findPartnerByAccountCode(siteId, summary.getAccountCode());
+            final PartnerMapping partner = partnerRepo.findPartnerByAccountCode(siteId, summary.getAccountCode());
 
             // 1'st entry
             if (previousPartner == null) {
