@@ -1,6 +1,5 @@
 package com.mhgad.za.vitel.billing.batch.extract;
 
-import com.mhgad.za.vitel.billing.batch.common.TestConfiguration;
 import com.mhgad.za.vitel.billing.batch.extract.model.Cdr;
 import com.mhgad.za.vitel.billing.batch.common.repo.TestRepo;
 import com.mhgad.za.vitel.billing.batch.extract.tasklet.DatasourceSupplierTasklet;
@@ -8,8 +7,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.batch.core.BatchStatus;
@@ -19,10 +16,9 @@ import org.springframework.batch.core.JobExecutionException;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,16 +26,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- *
- * @author plourand
- */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestConfiguration.class, PartnerBillingConfig.class})
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@SpringBootTest
+@ActiveProfiles({"test"})
 public class RetrieveCdrTest {
-    private static final Logger LOG = LogManager.getLogger(RetrieveCdrTest.class);
-
     private static final int EXPECTED_INITIAL_DATASOURCE_COUNT = 3;
     private static final Integer EXPECTED_ROW_COUNT = 60;
     private static final int EXPECTED_CPT_FILE_LINES = 40;
@@ -65,18 +55,15 @@ public class RetrieveCdrTest {
     @Autowired
     private TestRepo testRepo;
 
-    @Autowired
-    private EmbeddedDatabase ds;
-
     @Test
     public void success() throws JobExecutionException, IOException {
         assertEquals(EXPECTED_INITIAL_DATASOURCE_COUNT, dsTasklet.getDatasources().size());
 
-        JobParametersBuilder paramBuilder = new JobParametersBuilder();
+        final JobParametersBuilder paramBuilder = new JobParametersBuilder();
         paramBuilder.addString(PartnerBillingConst.PARAM_START_DATE, START_DATE);
         paramBuilder.addString(PartnerBillingConst.PARAM_END_DATE, END_DATE);
 
-        JobExecution jobRun = launcher.run(retrieveCdrsJob, paramBuilder.toJobParameters());
+        final JobExecution jobRun = launcher.run(retrieveCdrsJob, paramBuilder.toJobParameters());
         assertEquals(BatchStatus.COMPLETED, jobRun.getStatus());
 
         assertTrue(dsTasklet.getDatasources().isEmpty());
@@ -84,7 +71,7 @@ public class RetrieveCdrTest {
         final Integer count = testRepo.countCdrs();
         assertEquals(EXPECTED_ROW_COUNT, count);
         
-        List<Cdr> cdrWithNoUuidInitially = testRepo.findByDestChannel(CDR_DST_CHANNEL_WITH_NO_UUID);
+        final List<Cdr> cdrWithNoUuidInitially = testRepo.findByDestChannel(CDR_DST_CHANNEL_WITH_NO_UUID);
         assertNotNull(cdrWithNoUuidInitially);
         assertFalse(cdrWithNoUuidInitially.isEmpty());
         assertNotNull(cdrWithNoUuidInitially.get(0).getUniqueid());
@@ -98,18 +85,18 @@ public class RetrieveCdrTest {
     
     @Test
     public void failNoParams() throws Exception {
-        JobParametersBuilder paramBuilder = new JobParametersBuilder();
+        final JobParametersBuilder paramBuilder = new JobParametersBuilder();
 
-        JobExecution jobRun = launcher.run(retrieveCdrsJob, paramBuilder.toJobParameters());
+        final JobExecution jobRun = launcher.run(retrieveCdrsJob, paramBuilder.toJobParameters());
         assertEquals(BatchStatus.FAILED, jobRun.getStatus());
     }
 
     @Test
     public void failMissingParams() throws Exception {
-        JobParametersBuilder paramBuilder = new JobParametersBuilder();
+        final JobParametersBuilder paramBuilder = new JobParametersBuilder();
         paramBuilder.addString(PartnerBillingConst.PARAM_START_DATE, START_DATE);
 
-        JobExecution jobRun = launcher.run(retrieveCdrsJob, paramBuilder.toJobParameters());
+        final JobExecution jobRun = launcher.run(retrieveCdrsJob, paramBuilder.toJobParameters());
         assertEquals(BatchStatus.FAILED, jobRun.getStatus());
     }
 }
