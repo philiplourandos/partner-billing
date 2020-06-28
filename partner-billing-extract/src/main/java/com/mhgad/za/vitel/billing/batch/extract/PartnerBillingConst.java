@@ -1,9 +1,5 @@
 package com.mhgad.za.vitel.billing.batch.extract;
 
-/**
- *
- * @author plourand
- */
 public final class PartnerBillingConst {
     
     public static final String STATUS_CONTINUE = "continue";

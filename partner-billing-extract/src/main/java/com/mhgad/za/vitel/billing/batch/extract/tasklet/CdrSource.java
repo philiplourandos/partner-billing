@@ -2,10 +2,6 @@ package com.mhgad.za.vitel.billing.batch.extract.tasklet;
 
 import javax.sql.DataSource;
 
-/**
- *
- * @author plourand
- */
 public class CdrSource {
     private final DataSource ds;
     

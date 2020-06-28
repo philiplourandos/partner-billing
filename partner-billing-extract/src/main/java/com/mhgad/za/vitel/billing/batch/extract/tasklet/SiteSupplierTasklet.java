@@ -1,8 +1,8 @@
 package com.mhgad.za.vitel.billing.batch.extract.tasklet;
 
-import com.mhgad.za.vitel.billing.batch.common.AppProps;
 import com.mhgad.za.vitel.billing.batch.extract.model.Site;
 import com.mhgad.za.vitel.billing.batch.common.repo.PartnerBillingRepo;
+import com.mhgad.za.vitel.billing.batch.extract.ExtractProps;
 import java.io.File;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -22,21 +22,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 
-/**
- *
- * @author plourand
- */
 @Component
 public class SiteSupplierTasklet implements Tasklet, InitializingBean {
 
     private static final Logger LOG = LogManager.getLogger(SiteSupplierTasklet.class);
 
-    private static final String SITE_QUERY_PARAM = "site";
-    private static final String START_DATE_QUERY_PARAM = "startdate";
-    private static final String END_DATE_QUERY_PARAM = "enddate";
-
     @Autowired
-    private AppProps appProps;
+    private ExtractProps appProps;
     
     @Autowired
     @Qualifier("fileoutReader")
@@ -47,9 +39,6 @@ public class SiteSupplierTasklet implements Tasklet, InitializingBean {
 
     @Autowired
     private FlatFileItemWriter writer;
-
-    @Autowired
-    private AppProps props;
 
     private final Queue<Site> sites;
 
@@ -81,7 +70,7 @@ public class SiteSupplierTasklet implements Tasklet, InitializingBean {
         });
 
         final FileSystemResource outputFileRes = new FileSystemResource(
-                new File(props.getOutputPath(), next.getOutputFile()));
+                new File(appProps.getOutputPath(), next.getOutputFile()));
         writer.setResource(outputFileRes);
 
         LOG.info("Writing file: {}", next.getOutputFile());

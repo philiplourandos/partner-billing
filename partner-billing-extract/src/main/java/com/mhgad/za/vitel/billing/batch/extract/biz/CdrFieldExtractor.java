@@ -4,10 +4,6 @@ import com.mhgad.za.vitel.billing.batch.extract.model.Cdr;
 import java.text.SimpleDateFormat;
 import org.springframework.batch.item.file.transform.FieldExtractor;
 
-/**
- *
- * @author plourand
- */
 public class CdrFieldExtractor implements FieldExtractor<Cdr> {
 
     private static final int FIELD_COUNT = 17;

@@ -7,10 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-/**
- *
- * @author plourand
- */
 @Component
 public class CdrProcessor implements ItemProcessor<Cdr, Cdr> {
 

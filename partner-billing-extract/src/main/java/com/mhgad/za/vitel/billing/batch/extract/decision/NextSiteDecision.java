@@ -9,10 +9,6 @@ import org.springframework.batch.core.job.flow.JobExecutionDecider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- *
- * @author plourand
- */
 @Component
 public class NextSiteDecision implements JobExecutionDecider {
 
