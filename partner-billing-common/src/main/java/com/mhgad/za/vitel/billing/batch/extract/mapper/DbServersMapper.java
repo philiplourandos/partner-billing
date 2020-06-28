@@ -16,8 +16,8 @@ public class DbServersMapper implements RowMapper<DbServer> {
     }
 
     @Override
-    public DbServer mapRow(ResultSet rs, int i) throws SQLException {
-        DbServer pojo = new DbServer();
+    public DbServer mapRow(final ResultSet rs, final int index) throws SQLException {
+        final DbServer pojo = new DbServer();
         pojo.setId(rs.getInt(ID_INDEX));
         pojo.setUrl(rs.getString(URL_INDEX));
         pojo.setUsername(rs.getString(USERNAME_INDEX));

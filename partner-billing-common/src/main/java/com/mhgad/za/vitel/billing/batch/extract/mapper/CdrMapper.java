@@ -29,8 +29,8 @@ public class CdrMapper implements RowMapper<Cdr> {
     }
 
     @Override
-    public Cdr mapRow(ResultSet rs, int i) throws SQLException {
-        Cdr pojo = new Cdr();
+    public Cdr mapRow(final ResultSet rs, final int index) throws SQLException {
+        final Cdr pojo = new Cdr();
         pojo.setAccountcode(rs.getString(ACC_CODE_COLUMN_NAME));
         pojo.setAmaflags(rs.getInt(AMA_FLAGS_COLUMN_NAME));
         pojo.setBillsec(rs.getInt(BILLING_SECONDS_COLUMN_NAME));

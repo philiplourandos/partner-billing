@@ -15,8 +15,8 @@ public class SiteMapper implements RowMapper<Site> {
     }
 
     @Override
-    public Site mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Site site = new Site();
+    public Site mapRow(final ResultSet rs, final int rowNum) throws SQLException {
+        final Site site = new Site();
         site.setId(rs.getInt(ID_INDEX));
         site.setName(rs.getString(NAME_INDEX));
         site.setDescription(rs.getString(DESCRIPTION_INDEX));

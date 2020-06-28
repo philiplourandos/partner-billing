@@ -15,8 +15,8 @@ public class PartnerMapper implements RowMapper<PartnerMapping> {
     }
 
     @Override
-    public PartnerMapping mapRow(ResultSet rs, int rowNum) throws SQLException {
-        PartnerMapping bean = new PartnerMapping();
+    public PartnerMapping mapRow(final ResultSet rs, final int rowNum) throws SQLException {
+        final PartnerMapping bean = new PartnerMapping();
         bean.setDisciplineGroupId(rs.getInt(COLUMN_ID));
         bean.setName(rs.getString(COLUMN_NAME));
         bean.setAccountCode(rs.getInt(COLUMN_ACC_CODE));

@@ -3,23 +3,24 @@ package com.mhgad.za.vitel.billing.batch.extract.model;
 import java.sql.Timestamp;
 
 public class Cdr {
+
     private Timestamp callDate;
-	private String clid;
-	private String src;
-	private String dst;
-	private String dcontext;
-	private String channel;
-	private String dstchannel;
-	private String lastapp;
-	private String lastdata;
-	private Integer duration;
-	private Integer billsec;
-	private String disposition;
-	private Integer amaflags;
-	private String accountcode;
-	private String uniqueid;
-	private String userfield;
-	private Double cost;
+    private String clid;
+    private String src;
+    private String dst;
+    private String dcontext;
+    private String channel;
+    private String dstchannel;
+    private String lastapp;
+    private String lastdata;
+    private Integer duration;
+    private Integer billsec;
+    private String disposition;
+    private Integer amaflags;
+    private String accountcode;
+    private String uniqueid;
+    private String userfield;
+    private Double cost;
 
     public Cdr() {
     }
@@ -159,6 +160,5 @@ public class Cdr {
     public void setCost(Double cost) {
         this.cost = cost;
     }
-    
-    
+
 }
