@@ -50,25 +50,7 @@ public final class SqlConst {
             + "     userfield,"
             + "     cost,"
             + "     site_id) "
-            + " VALUES( "
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?)";
+            + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     
     public static final String FILE_OUT_CDR_RECORDS_SELECT = 
@@ -119,17 +101,7 @@ public final class SqlConst {
             + "     Carrier,"
             + "     Attribute,"
             + "     Site_id)"
-            + " VALUES("
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?,"
-            + "     ?)";
+            + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     private SqlConst() {
     }
