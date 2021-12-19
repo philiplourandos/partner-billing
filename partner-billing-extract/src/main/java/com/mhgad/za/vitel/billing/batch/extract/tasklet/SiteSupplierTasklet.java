@@ -19,33 +19,29 @@ import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.stereotype.Component;
 
-@Component
 public class SiteSupplierTasklet implements Tasklet, InitializingBean {
 
     private static final Logger LOG = LogManager.getLogger(SiteSupplierTasklet.class);
 
-    @Autowired
-    private ExtractProps appProps;
-    
-    @Autowired
-    @Qualifier("fileoutReader")
-    private JdbcCursorItemReader reader;
+    private final ExtractProps appProps;
 
-    @Autowired
-    private PartnerBillingRepo repo;
+    private final JdbcCursorItemReader reader;
 
-    @Autowired
-    private FlatFileItemWriter writer;
+    private final PartnerBillingRepo repo;
+
+    private final FlatFileItemWriter writer;
 
     private final Queue<Site> sites;
 
-    public SiteSupplierTasklet() {
-        sites = new LinkedList<>();
+    public SiteSupplierTasklet(final ExtractProps appProps, final JdbcCursorItemReader reader,
+            final PartnerBillingRepo repo, final FlatFileItemWriter writer) {
+        this.appProps = appProps;
+        this.reader = reader;
+        this.repo = repo;
+        this.writer = writer;
+        this.sites = new LinkedList<>();
     }
 
     @Override
