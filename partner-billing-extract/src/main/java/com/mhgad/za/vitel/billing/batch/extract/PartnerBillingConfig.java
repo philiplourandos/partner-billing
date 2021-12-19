@@ -138,19 +138,29 @@ public class PartnerBillingConfig {
                 .start(paramsStep(stepBuilderFactory, reader))
                 .next(getDatasource)
                 .next(retrieveCdrs)
-                .next(dsDecision)
+                .next(nextDsDecision(null))
                 .on(PartnerBillingConst.STATUS_CONTINUE)
                 .to(getDatasource)
-                .from(dsDecision).on(FlowExecutionStatus.COMPLETED.toString())
+                .from(nextDsDecision(null)).on(FlowExecutionStatus.COMPLETED.toString())
                 .to(getSite)
                 .next(writeOutFiles)
-                .next(siteDecision)
+                .next(nextSiteDecision(null))
                 .on(PartnerBillingConst.STATUS_CONTINUE)
                 .to(getSite)
-                .from(siteDecision).on(FlowExecutionStatus.COMPLETED.toString())
+                .from(nextSiteDecision(null)).on(FlowExecutionStatus.COMPLETED.toString())
                 .to(endStep(stepBuilderFactory)).end().build();
     }
 
+    @Bean
+    public NextSiteDecision nextSiteDecision(final SiteSupplierTasklet siteSupplier) throws Exception {
+        return new NextSiteDecision(siteSupplier);
+    }
+    
+    @Bean
+    public NextDatasourceDecision nextDsDecision(final DatasourceSupplierTasklet dsSupplier) throws Exception {
+        return new NextDatasourceDecision(dsSupplier);
+    }
+    
     public Step endStep(final StepBuilderFactory stepBuilderFactory) {
         final Tasklet task = (contribution, chunkContext) -> {return RepeatStatus.FINISHED;};
 
