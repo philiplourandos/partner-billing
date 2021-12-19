@@ -1,6 +1,7 @@
 package com.mhgad.za.vitel.billing.batch.extract;
 
 import com.mhgad.za.vitel.billing.batch.common.SqlConst;
+import com.mhgad.za.vitel.billing.batch.common.repo.PartnerBillingRepo;
 import com.mhgad.za.vitel.billing.batch.extract.biz.CdrFieldExtractor;
 import com.mhgad.za.vitel.billing.batch.extract.biz.CdrProcessor;
 import com.mhgad.za.vitel.billing.batch.extract.decision.NextDatasourceDecision;
@@ -32,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 @ComponentScan(basePackages = {"com.mhgad.za.vitel.billing.batch.extract",
     "com.mhgad.za.vitel.billing.batch.common"})
@@ -41,9 +41,6 @@ public class PartnerBillingConfig {
 
     @Autowired
     private ExtractProps appProps;
-
-    @Autowired
-    private DatasourceSupplierTasklet dsSupplier;
 
     @Autowired
     private SiteSupplierTasklet siteSupplier;
@@ -56,6 +53,12 @@ public class PartnerBillingConfig {
 
     @Autowired
     private CdrProcessor costItemProc;
+
+    @Bean
+    public DatasourceSupplierTasklet dsSupplier(final PartnerBillingRepo dbServersRepo, final DataSource partnerBillingDs)
+            throws Exception{
+        return new DatasourceSupplierTasklet(dbServersRepo, cdrReader(partnerBillingDs), appProps, cdrWriter(partnerBillingDs));
+    }
 
     @Bean
     public JdbcPagingItemReader cdrReader(final DataSource partnerBillingDs) throws Exception {
@@ -118,7 +121,7 @@ public class PartnerBillingConfig {
     @Bean
     public Job createJob(final StepBuilderFactory stepBuilderFactory, final JobBuilderFactory jobs,
             final DataSource partnerBillingDs) throws Exception {
-        final Step getDatasource = stepBuilderFactory.get("getDatasource").tasklet(dsSupplier).build();
+        final Step getDatasource = stepBuilderFactory.get("getDatasource").tasklet(dsSupplier(null, partnerBillingDs)).build();
         final JdbcPagingItemReader reader = cdrReader(partnerBillingDs);
 
         final Step retrieveCdrs = stepBuilderFactory.get("stepRetrieveCdrs")
