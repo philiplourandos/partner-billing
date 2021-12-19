@@ -51,7 +51,7 @@ public class SummaryProcessor implements ItemProcessor<BillingItem, BillingItem>
             required = summaries.get(accountCode);
         }
 
-        BigDecimal cost = item.getCost();
+        final BigDecimal cost = item.getCost();
 
         if (AttributeEnum.INBOUND.equals(item.getAttribute())) {
             required.addInbound(cost);

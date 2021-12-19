@@ -28,7 +28,7 @@ public class AspiviaPrepStatementSetter implements ItemPreparedStatementSetter<B
     }
 
     @Override
-    public void setValues(BillingItem item, PreparedStatement ps) throws SQLException {
+    public void setValues(final BillingItem item, final PreparedStatement ps) throws SQLException {
         ps.setString(INDEX_EXTENSION, item.getExtension());
         ps.setTimestamp(INDEX_PBX_DATE_TIME, item.getPbxDateTime());
         ps.setInt(INDEX_DURATION, item.getCallDuration());

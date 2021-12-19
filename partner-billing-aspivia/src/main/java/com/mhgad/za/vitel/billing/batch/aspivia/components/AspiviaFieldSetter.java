@@ -32,7 +32,7 @@ public class AspiviaFieldSetter implements FieldSetMapper<BillingItem> {
 
     @Override
     public BillingItem mapFieldSet(FieldSet fieldSet) throws BindException {
-        BillingItem entry = new BillingItem();
+        final BillingItem entry = new BillingItem();
 
         try {
             entry.setExtension(fieldSet.readString(INDEX_EXTENSION));
