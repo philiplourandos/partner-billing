@@ -14,39 +14,45 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class PartnerBillingRepo {
     private static final String FIND_ALL_SERVERS =
-            "   SELECT "
-            + "     dbs.id,"
-            + "     dbs.jdbc_url,"
-            + "     dbs.jdbc_username,"
-            + "     dbs.jdbc_password, "
-            + "     dbs.site_id "
-            + " FROM "
-            + "     DB_SERVERS dbs";
+            """
+            SELECT
+                dbs.id,
+                dbs.jdbc_url,
+                dbs.jdbc_username,
+                dbs.jdbc_password, 
+                dbs.site_id
+            FROM
+                DB_SERVERS dbs
+            """;
     
     private static final String FIND_ALL_SITES = 
-            "   SELECT "
-            + "     s.id, "
-            + "     s.name, "
-            + "     s.description, "
-            + "     s.outputFile "
-            + " FROM "
-            + "     site s";
+            """
+            SELECT
+                s.id,
+                s.name,
+                s.description,
+                s.outputFile
+            FROM
+                site s
+            """;
     
     private static final String FIND_PARTNER_NAME =
-            "   SELECT "
-            + "     p.name "
-            + " FROM "
-            + "     partner p,"
-            + "     partner_group pg,"
-            + "     site s "
-            + " WHERE "
-            + "     s.name = ?"
-            + "     AND"
-            + "     pg.site_id = s.id"
-            + "     AND"
-            + "     p.group_id = pg.id"
-            + "     AND"
-            + "     p.accountcode = ?";
+            """
+            SELECT
+                p.name
+            FROM
+                partner p,
+                partner_group pg,
+                site s
+            WHERE
+                s.name = ?
+                AND
+                pg.site_id = s.id
+                AND
+                p.group_id = pg.id
+                AND
+                p.accountcode = ?
+            """;
     
     private static final String FIND_SITE_BY_NAME =
             "   SELECT "
@@ -57,21 +63,23 @@ public class PartnerBillingRepo {
             + "     s.name = ?";
     
     private static final String FIND_PARTNERS_BY_ACCOUNT_CODE_QUERY =
-            "   SELECT "
-            + "     p.name AS NAME,"
-            + "     dg.id AS ID,"
-            + "     p.accountCode AS ACCOUNT_CODE "
-            + " FROM "
-            + "     discipline_group dg,"
-            + "     partner p"
-            + " WHERE "
-            + "     dg.site_id = ? "
-            + "     AND "
-            + "     dg.id = p.discipline_id "
-            + "     AND "
-            + "     p.accountCode = ? "
-            + " ORDER BY "
-            + "     p.name";
+            """
+            SELECT
+                p.name AS NAME,
+                dg.id AS ID,
+                p.accountCode AS ACCOUNT_CODE 
+            FROM
+                discipline_group dg,
+                partner p
+            WHERE
+                dg.site_id = ?
+                AND
+                dg.id = p.discipline_id
+                AND
+                p.accountCode = ?
+            ORDER BY
+                p.name
+            """;
 
     @Autowired
     private JdbcOperations ops;
