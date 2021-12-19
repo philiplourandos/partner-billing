@@ -10,6 +10,7 @@ import com.mhgad.za.vitel.billing.batch.extract.mapper.CdrMapper;
 import com.mhgad.za.vitel.billing.batch.extract.model.Cdr;
 import com.mhgad.za.vitel.billing.batch.extract.tasklet.DatasourceSupplierTasklet;
 import com.mhgad.za.vitel.billing.batch.extract.tasklet.SiteSupplierTasklet;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -43,9 +44,6 @@ public class PartnerBillingConfig {
     private ExtractProps appProps;
 
     @Autowired
-    private SiteSupplierTasklet siteSupplier;
-
-    @Autowired
     private NextDatasourceDecision dsDecision;
 
     @Autowired
@@ -53,6 +51,12 @@ public class PartnerBillingConfig {
 
     @Autowired
     private CdrProcessor costItemProc;
+
+    @Bean
+    public SiteSupplierTasklet siteSupplier(final PartnerBillingRepo repo, final DataSource partnerBillingDs)
+            throws Exception {
+        return new SiteSupplierTasklet(appProps, fileoutReader(partnerBillingDs), repo, fileoutWriter());
+    }
 
     @Bean
     public DatasourceSupplierTasklet dsSupplier(final PartnerBillingRepo dbServersRepo, final DataSource partnerBillingDs)
@@ -112,7 +116,7 @@ public class PartnerBillingConfig {
         lineAgg.setFieldExtractor(new CdrFieldExtractor());
 
         final FlatFileItemWriter<Cdr> writer = new FlatFileItemWriter<>();
-        writer.setEncoding("UTF-8");
+        writer.setEncoding(StandardCharsets.UTF_8.name());
         writer.setLineAggregator(lineAgg);
 
         return writer;
@@ -120,8 +124,8 @@ public class PartnerBillingConfig {
 
     @Bean
     public Job createJob(final StepBuilderFactory stepBuilderFactory, final JobBuilderFactory jobs,
-            final DataSource partnerBillingDs) throws Exception {
-        final Step getDatasource = stepBuilderFactory.get("getDatasource").tasklet(dsSupplier(null, partnerBillingDs)).build();
+            final DataSource partnerBillingDs, final PartnerBillingRepo repo) throws Exception {
+        final Step getDatasource = stepBuilderFactory.get("getDatasource").tasklet(dsSupplier(repo, partnerBillingDs)).build();
         final JdbcPagingItemReader reader = cdrReader(partnerBillingDs);
 
         final Step retrieveCdrs = stepBuilderFactory.get("stepRetrieveCdrs")
@@ -130,7 +134,7 @@ public class PartnerBillingConfig {
                 .processor(costItemProc)
                 .writer(cdrWriter(partnerBillingDs)).build();
 
-        final Step getSite = stepBuilderFactory.get("getSites").tasklet(siteSupplier).build();
+        final Step getSite = stepBuilderFactory.get("getSites").tasklet(siteSupplier(repo, partnerBillingDs)).build();
         final Step writeOutFiles = stepBuilderFactory.get("writeOutFiles")
                 .<Cdr, Cdr>chunk(appProps.getChunkSize())
                 .reader(fileoutReader(partnerBillingDs))
