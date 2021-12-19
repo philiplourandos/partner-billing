@@ -19,9 +19,7 @@ import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.stereotype.Component;
 
-@Component
 public class DatasourceSupplierTasklet implements Tasklet, InitializingBean {
 
     private static final Logger LOG = LogManager.getLogger(DatasourceSupplierTasklet.class);
