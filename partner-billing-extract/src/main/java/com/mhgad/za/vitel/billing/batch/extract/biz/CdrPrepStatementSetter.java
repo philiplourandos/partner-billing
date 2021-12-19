@@ -27,7 +27,7 @@ public class CdrPrepStatementSetter implements ItemPreparedStatementSetter<Cdr> 
     private static final int COST_INDEX = 17;
     private static final int SITE_INDEX = 18;
     
-    private Integer siteId;
+    private final Integer siteId;
     
     public CdrPrepStatementSetter(final Integer siteId) {
         this.siteId = siteId;
