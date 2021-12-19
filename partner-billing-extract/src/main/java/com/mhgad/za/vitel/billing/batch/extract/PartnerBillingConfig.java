@@ -58,11 +58,6 @@ public class PartnerBillingConfig {
     private CdrProcessor costItemProc;
 
     @Bean
-    public JdbcTemplate partnerBillingTemplate(final DataSource partnerBillingDs) {
-        return new JdbcTemplate(partnerBillingDs);
-    }
-
-    @Bean
     public JdbcPagingItemReader cdrReader(final DataSource partnerBillingDs) throws Exception {
         final SqlPagingQueryProviderFactoryBean queryProvider = new SqlPagingQueryProviderFactoryBean();
         queryProvider.setSelectClause(SqlConst.RETRIEVE_CDR_RECORDS_SELECT);
