@@ -19,7 +19,6 @@ import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -29,20 +28,21 @@ public class DatasourceSupplierTasklet implements Tasklet, InitializingBean {
     
     private final Queue<CdrSource> cdrSources;
     
-    @Autowired
-    private PartnerBillingRepo dbServersRepo;
+    private final PartnerBillingRepo dbServersRepo;
 
-    @Autowired
-    private JdbcPagingItemReader cdrReader;
+    private final JdbcPagingItemReader cdrReader;
 
-    @Autowired
-    private ExtractProps props;
+    private final ExtractProps props;
 
-    @Autowired
-    private JdbcBatchItemWriter writer;
-    
-    public DatasourceSupplierTasklet() {
-        cdrSources = new LinkedList<>();
+    private final JdbcBatchItemWriter writer;
+
+    public DatasourceSupplierTasklet(final PartnerBillingRepo dbServersRepo, final JdbcPagingItemReader cdrReader, 
+            final ExtractProps props, final JdbcBatchItemWriter writer) {
+        this.cdrSources = new LinkedList<>();
+        this.dbServersRepo = dbServersRepo;
+        this.cdrReader = cdrReader;
+        this.props = props;
+        this.writer = writer;
     }
 
     @Override
