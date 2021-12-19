@@ -6,16 +6,13 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.job.flow.FlowExecutionStatus;
 import org.springframework.batch.core.job.flow.JobExecutionDecider;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class NextDatasourceDecision implements JobExecutionDecider {
 
-    @Autowired
-    private DatasourceSupplierTasklet dsSupplier;
+    private final DatasourceSupplierTasklet dsSupplier;
 
-    public NextDatasourceDecision() {
+    public NextDatasourceDecision(final DatasourceSupplierTasklet dsSupplier) {
+        this.dsSupplier = dsSupplier;
     }
 
     @Override

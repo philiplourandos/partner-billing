@@ -6,23 +6,20 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.job.flow.FlowExecutionStatus;
 import org.springframework.batch.core.job.flow.JobExecutionDecider;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class NextSiteDecision implements JobExecutionDecider {
 
-    @Autowired
-    private SiteSupplierTasklet task;
+    private final SiteSupplierTasklet task;
     
-    public NextSiteDecision() {
+    public NextSiteDecision(final SiteSupplierTasklet task) {
+        this.task = task;
     }
 
     @Override
     public FlowExecutionStatus decide(final JobExecution jobExecution, final StepExecution stepExecution) {
         FlowExecutionStatus response = new FlowExecutionStatus(PartnerBillingConst.STATUS_CONTINUE);
 
-        if( task.getSites().isEmpty()) {
+        if (task.getSites().isEmpty()) {
             response = FlowExecutionStatus.COMPLETED;
         }
 

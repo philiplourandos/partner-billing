@@ -1,6 +1,7 @@
 package com.mhgad.za.vitel.billing.batch.extract;
 
 import com.mhgad.za.vitel.billing.batch.common.SqlConst;
+import com.mhgad.za.vitel.billing.batch.common.repo.PartnerBillingRepo;
 import com.mhgad.za.vitel.billing.batch.extract.biz.CdrFieldExtractor;
 import com.mhgad.za.vitel.billing.batch.extract.biz.CdrProcessor;
 import com.mhgad.za.vitel.billing.batch.extract.decision.NextDatasourceDecision;
@@ -9,6 +10,7 @@ import com.mhgad.za.vitel.billing.batch.extract.mapper.CdrMapper;
 import com.mhgad.za.vitel.billing.batch.extract.model.Cdr;
 import com.mhgad.za.vitel.billing.batch.extract.tasklet.DatasourceSupplierTasklet;
 import com.mhgad.za.vitel.billing.batch.extract.tasklet.SiteSupplierTasklet;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,7 +34,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 @ComponentScan(basePackages = {"com.mhgad.za.vitel.billing.batch.extract",
     "com.mhgad.za.vitel.billing.batch.common"})
@@ -43,23 +44,18 @@ public class PartnerBillingConfig {
     private ExtractProps appProps;
 
     @Autowired
-    private DatasourceSupplierTasklet dsSupplier;
-
-    @Autowired
-    private SiteSupplierTasklet siteSupplier;
-
-    @Autowired
-    private NextDatasourceDecision dsDecision;
-
-    @Autowired
-    private NextSiteDecision siteDecision;
-
-    @Autowired
     private CdrProcessor costItemProc;
 
     @Bean
-    public JdbcTemplate partnerBillingTemplate(final DataSource partnerBillingDs) {
-        return new JdbcTemplate(partnerBillingDs);
+    public SiteSupplierTasklet siteSupplier(final PartnerBillingRepo repo, final DataSource partnerBillingDs)
+            throws Exception {
+        return new SiteSupplierTasklet(appProps, fileoutReader(partnerBillingDs), repo, fileoutWriter());
+    }
+
+    @Bean
+    public DatasourceSupplierTasklet dsSupplier(final PartnerBillingRepo dbServersRepo, final DataSource partnerBillingDs)
+            throws Exception{
+        return new DatasourceSupplierTasklet(dbServersRepo, cdrReader(partnerBillingDs), appProps, cdrWriter(partnerBillingDs));
     }
 
     @Bean
@@ -114,7 +110,7 @@ public class PartnerBillingConfig {
         lineAgg.setFieldExtractor(new CdrFieldExtractor());
 
         final FlatFileItemWriter<Cdr> writer = new FlatFileItemWriter<>();
-        writer.setEncoding("UTF-8");
+        writer.setEncoding(StandardCharsets.UTF_8.name());
         writer.setLineAggregator(lineAgg);
 
         return writer;
@@ -122,8 +118,8 @@ public class PartnerBillingConfig {
 
     @Bean
     public Job createJob(final StepBuilderFactory stepBuilderFactory, final JobBuilderFactory jobs,
-            final DataSource partnerBillingDs) throws Exception {
-        final Step getDatasource = stepBuilderFactory.get("getDatasource").tasklet(dsSupplier).build();
+            final DataSource partnerBillingDs, final PartnerBillingRepo repo) throws Exception {
+        final Step getDatasource = stepBuilderFactory.get("getDatasource").tasklet(dsSupplier(repo, partnerBillingDs)).build();
         final JdbcPagingItemReader reader = cdrReader(partnerBillingDs);
 
         final Step retrieveCdrs = stepBuilderFactory.get("stepRetrieveCdrs")
@@ -132,7 +128,7 @@ public class PartnerBillingConfig {
                 .processor(costItemProc)
                 .writer(cdrWriter(partnerBillingDs)).build();
 
-        final Step getSite = stepBuilderFactory.get("getSites").tasklet(siteSupplier).build();
+        final Step getSite = stepBuilderFactory.get("getSites").tasklet(siteSupplier(repo, partnerBillingDs)).build();
         final Step writeOutFiles = stepBuilderFactory.get("writeOutFiles")
                 .<Cdr, Cdr>chunk(appProps.getChunkSize())
                 .reader(fileoutReader(partnerBillingDs))
@@ -142,19 +138,29 @@ public class PartnerBillingConfig {
                 .start(paramsStep(stepBuilderFactory, reader))
                 .next(getDatasource)
                 .next(retrieveCdrs)
-                .next(dsDecision)
+                .next(nextDsDecision(null))
                 .on(PartnerBillingConst.STATUS_CONTINUE)
                 .to(getDatasource)
-                .from(dsDecision).on(FlowExecutionStatus.COMPLETED.toString())
+                .from(nextDsDecision(null)).on(FlowExecutionStatus.COMPLETED.toString())
                 .to(getSite)
                 .next(writeOutFiles)
-                .next(siteDecision)
+                .next(nextSiteDecision(null))
                 .on(PartnerBillingConst.STATUS_CONTINUE)
                 .to(getSite)
-                .from(siteDecision).on(FlowExecutionStatus.COMPLETED.toString())
+                .from(nextSiteDecision(null)).on(FlowExecutionStatus.COMPLETED.toString())
                 .to(endStep(stepBuilderFactory)).end().build();
     }
 
+    @Bean
+    public NextSiteDecision nextSiteDecision(final SiteSupplierTasklet siteSupplier) throws Exception {
+        return new NextSiteDecision(siteSupplier);
+    }
+    
+    @Bean
+    public NextDatasourceDecision nextDsDecision(final DatasourceSupplierTasklet dsSupplier) throws Exception {
+        return new NextDatasourceDecision(dsSupplier);
+    }
+    
     public Step endStep(final StepBuilderFactory stepBuilderFactory) {
         final Tasklet task = (contribution, chunkContext) -> {return RepeatStatus.FINISHED;};
 

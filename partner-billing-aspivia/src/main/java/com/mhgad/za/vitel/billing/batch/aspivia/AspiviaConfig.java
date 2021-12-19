@@ -40,11 +40,11 @@ public class AspiviaConfig {
     @Bean
     @StepScope
     public FlatFileItemReader aspiviaFileReader(@Value("#{jobParameters['input.file']}") String inputFile) {
-        DefaultLineMapper lineMapper = new DefaultLineMapper();
+        final DefaultLineMapper lineMapper = new DefaultLineMapper();
         lineMapper.setFieldSetMapper(new AspiviaFieldSetter());
         lineMapper.setLineTokenizer(new DelimitedLineTokenizer());
 
-        FlatFileItemReader reader = new FlatFileItemReader();
+        final FlatFileItemReader reader = new FlatFileItemReader();
         reader.setLinesToSkip(1);
         reader.setLineMapper(lineMapper);
         reader.setResource(new FileSystemResource(inputFile));
@@ -55,7 +55,7 @@ public class AspiviaConfig {
     @Bean
     @StepScope
     public JdbcBatchItemWriter aspiviaWriter(DataSource ds, AspiviaPrepStatementSetter setter) {
-        JdbcBatchItemWriter writer = new JdbcBatchItemWriter();
+        final JdbcBatchItemWriter writer = new JdbcBatchItemWriter();
         writer.setDataSource(ds);
         writer.setItemPreparedStatementSetter(setter);
         writer.setSql(SqlConst.INSERT_INTO_ASPIVIA);
@@ -83,7 +83,7 @@ public class AspiviaConfig {
 
     @Bean
     public Job createJob(JobBuilderFactory jobBuilder, StepBuilderFactory stepBuilders, DataSource ds, FlatFileItemReader reader) {
-        Step findSiteIdStep = stepBuilders.get("find.site.id").tasklet((contribution,  chunkContext) -> {
+        final Step findSiteIdStep = stepBuilders.get("find.site.id").tasklet((contribution,  chunkContext) -> {
             String siteName = 
                     (String) chunkContext.getStepContext().getJobParameters().get(AspiviaConst.PARAM_SITE);
 
@@ -95,7 +95,7 @@ public class AspiviaConfig {
             return RepeatStatus.FINISHED;
         }).build();
 
-        Step processFileStep = 
+        final Step processFileStep = 
                 stepBuilders.get("process.file").<BillingItem, BillingItem>chunk(appProps.getChunkSize())
                 .reader(reader)
                 .processor(summaryProc())
