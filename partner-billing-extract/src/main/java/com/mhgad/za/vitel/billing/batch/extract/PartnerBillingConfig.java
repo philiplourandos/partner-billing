@@ -44,12 +44,6 @@ public class PartnerBillingConfig {
     private ExtractProps appProps;
 
     @Autowired
-    private NextDatasourceDecision dsDecision;
-
-    @Autowired
-    private NextSiteDecision siteDecision;
-
-    @Autowired
     private CdrProcessor costItemProc;
 
     @Bean
