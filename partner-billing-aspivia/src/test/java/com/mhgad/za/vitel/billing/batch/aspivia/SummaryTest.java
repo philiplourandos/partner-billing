@@ -66,19 +66,19 @@ public class SummaryTest {
         paramBuilder.addString(AspiviaConst.PARAM_SITE, SITE);
         paramBuilder.addString(AspiviaConst.PARAM_OUTPUT_FILE_PATH, outputFile.getPath());
 
-        JobExecution jobExec = launcher.run(summaryJob, paramBuilder.toJobParameters());
+        final JobExecution jobExec = launcher.run(summaryJob, paramBuilder.toJobParameters());
 
         assertEquals(ExitStatus.COMPLETED, jobExec.getExitStatus());
         
-        Integer recordCount = testRepo.countAspivia();
+        final Integer recordCount = testRepo.countAspivia();
         assertEquals(EXPECTED_RECORDS, recordCount);
         
         assertTrue(outputFile.exists());
     }
     
     @Test
-    public void  failNoParams() throws Exception {
-        JobParametersBuilder paramBuilder = new JobParametersBuilder();
+    public void failNoParams() throws Exception {
+        final JobParametersBuilder paramBuilder = new JobParametersBuilder();
 
         JobExecution jobExec = launcher.run(summaryJob, paramBuilder.toJobParameters());
         
@@ -87,11 +87,10 @@ public class SummaryTest {
 
     @Test
     public void failMissingParams() throws Exception {
-        JobParametersBuilder paramBuilder = new JobParametersBuilder();
-
+        final JobParametersBuilder paramBuilder = new JobParametersBuilder();
         paramBuilder.addString(AspiviaConst.PARAM_SITE, SITE);
 
-        JobExecution jobExec = launcher.run(summaryJob, paramBuilder.toJobParameters());
+        final JobExecution jobExec = launcher.run(summaryJob, paramBuilder.toJobParameters());
 
         assertEquals(ExitStatus.FAILED.getExitCode(), jobExec.getExitStatus().getExitCode());
     }
@@ -102,30 +101,30 @@ public class SummaryTest {
         summaryTasklet.setPartnerRepo(partnerRepo);
         summaryTasklet.setSiteId(SITE_ID);
 
-        final List<String> lines =
-                Files.readAllLines(Paths.get(summaryDataFile.getURI()), StandardCharsets.UTF_8);
+        final List<String> lines = Files.readAllLines(
+                Paths.get(summaryDataFile.getURI()), StandardCharsets.UTF_8);
 
         final List<Summary> inputData = new ArrayList<>();
         final List<Summary> expectedValues = new ArrayList<>();
 
         lines.forEach(line -> {
-            String[] values = line.split(",");
+            final String[] values = line.split(",");
 
-            Integer accCode = Integer.valueOf(values[0].trim());
+            final Integer accCode = Integer.valueOf(values[0].trim());
             String partner = values[1].trim();
-            Integer callCount = Integer.valueOf(values[2].trim());
-            BigDecimal inAmount = new BigDecimal(values[3].trim());
-            BigDecimal outAmount = new BigDecimal(values[4].trim());
-            BigDecimal total = new BigDecimal(values[6].trim());
+            final Integer callCount = Integer.valueOf(values[2].trim());
+            final BigDecimal inAmount = new BigDecimal(values[3].trim());
+            final BigDecimal outAmount = new BigDecimal(values[4].trim());
+            final BigDecimal total = new BigDecimal(values[6].trim());
 
-            Summary input = new Summary();
+            final Summary input = new Summary();
             input.setAccountCode(accCode);
             input.setPartner(partner);
             input.setNumberOfCalls(callCount);
             input.setMoneyIn(inAmount);
             input.setMoneyOut(outAmount);
 
-            Summary expectation = new Summary();
+            final Summary expectation = new Summary();
             expectation.setAccountCode(accCode);
             expectation.setNumberOfCalls(callCount);
             expectation.setPartner(partner);
