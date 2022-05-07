@@ -26,6 +26,7 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
+import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
@@ -69,16 +70,16 @@ public class PartnerBillingConfig {
 
         final Map<String, Date> params = new HashMap<>();
 
-        final JdbcPagingItemReader reader = new JdbcPagingItemReader();
-        // Use partner billing for setup, it will be replaced with 1 for the target machines
-        reader.setDataSource(partnerBillingDs);
-        reader.setFetchSize(appProps.getFetchSize());
-        reader.setQueryProvider(queryProvider.getObject());
-        reader.setPageSize(appProps.getPagingSize());
-        reader.setParameterValues(params);
-        reader.setRowMapper(new CdrMapper());
-
-        return reader;
+        return new JdbcPagingItemReaderBuilder()
+            .name("crd-reader")
+            // Use partner billing for setup, it will be replaced with 1 for the target machines
+            .dataSource(partnerBillingDs)
+            .fetchSize(appProps.getFetchSize())
+            .queryProvider(queryProvider.getObject())
+            .pageSize(appProps.getPagingSize())
+            .parameterValues(params)
+            .rowMapper(new CdrMapper())
+            .build();
     }
 
     @Bean
