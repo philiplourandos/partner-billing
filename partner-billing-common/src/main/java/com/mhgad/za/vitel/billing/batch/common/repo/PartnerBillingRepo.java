@@ -55,12 +55,15 @@ public class PartnerBillingRepo {
             """;
     
     private static final String FIND_SITE_BY_NAME =
-            "   SELECT "
-            + "     id "
-            + " FROM "
-            + "     site s "
-            + " WHERE "
-            + "     s.name = ?";
+            """
+            SELECT
+                id
+            FROM
+                site s
+            WHERE 
+                s.name = ?
+            """;
+            
     
     private static final String FIND_PARTNERS_BY_ACCOUNT_CODE_QUERY =
             """
