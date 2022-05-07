@@ -138,8 +138,6 @@ public class SummaryTest {
 
         summaryTasklet.calculateTotals(inputData);
 
-        expectedValues.stream().forEach(e -> {
-            assertTrue(expectedValues.contains(e));
-        });
+        expectedValues.stream().forEach(e -> assertTrue(expectedValues.contains(e)));
     }
 }
