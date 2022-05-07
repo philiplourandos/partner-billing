@@ -15,7 +15,9 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
+import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.repeat.RepeatStatus;
@@ -44,23 +46,22 @@ public class AspiviaConfig {
         lineMapper.setFieldSetMapper(new AspiviaFieldSetter());
         lineMapper.setLineTokenizer(new DelimitedLineTokenizer());
 
-        final FlatFileItemReader reader = new FlatFileItemReader();
-        reader.setLinesToSkip(1);
-        reader.setLineMapper(lineMapper);
-        reader.setResource(new FileSystemResource(inputFile));
-
-        return reader;
+        return new FlatFileItemReaderBuilder()
+                .name("aspiviaFileReader")
+                .linesToSkip(1)
+                .lineMapper(lineMapper)
+                .resource(new FileSystemResource(inputFile))
+                .build();
     }
 
     @Bean
     @StepScope
     public JdbcBatchItemWriter aspiviaWriter(DataSource ds, AspiviaPrepStatementSetter setter) {
-        final JdbcBatchItemWriter writer = new JdbcBatchItemWriter();
-        writer.setDataSource(ds);
-        writer.setItemPreparedStatementSetter(setter);
-        writer.setSql(SqlConst.INSERT_INTO_ASPIVIA);
-
-        return writer;
+        return new JdbcBatchItemWriterBuilder()
+                .dataSource(ds)
+                .itemPreparedStatementSetter(setter)
+                .sql(SqlConst.INSERT_INTO_ASPIVIA)
+                .build();
     }
 
     @Bean
@@ -84,10 +85,10 @@ public class AspiviaConfig {
     @Bean
     public Job createJob(JobBuilderFactory jobBuilder, StepBuilderFactory stepBuilders, DataSource ds, FlatFileItemReader reader) {
         final Step findSiteIdStep = stepBuilders.get("find.site.id").tasklet((contribution,  chunkContext) -> {
-            String siteName = 
+            final String siteName = 
                     (String) chunkContext.getStepContext().getJobParameters().get(AspiviaConst.PARAM_SITE);
 
-            Integer siteId = billingRepo.findSiteIdByName(siteName);
+            final Integer siteId = billingRepo.findSiteIdByName(siteName);
 
             chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().put(
                     AspiviaConst.SITE_ID, siteId);
