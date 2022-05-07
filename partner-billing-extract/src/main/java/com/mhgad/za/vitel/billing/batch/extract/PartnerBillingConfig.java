@@ -26,9 +26,12 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
+import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
+import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
 import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
 import org.springframework.batch.item.file.FlatFileItemWriter;
+import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,24 +87,23 @@ public class PartnerBillingConfig {
 
     @Bean
     public JdbcBatchItemWriter cdrWriter(final DataSource partnerBillingDs) {
-        final JdbcBatchItemWriter writer = new JdbcBatchItemWriter();
-        writer.setDataSource(partnerBillingDs);
-        writer.setItemPreparedStatementSetter((item, ps) -> {});
-        writer.setSql(SqlConst.WRITE_CDR_QUERY);
-
-        return writer;
+        return new JdbcBatchItemWriterBuilder()
+            .dataSource(partnerBillingDs)
+            .itemPreparedStatementSetter((item, ps) -> {})
+            .sql(SqlConst.WRITE_CDR_QUERY)
+            .build();
     }
 
     @Bean(name = "fileoutReader")
     public JdbcCursorItemReader fileoutReader(final DataSource partnerBillingDs) throws Exception {
-        final JdbcCursorItemReader reader = new JdbcCursorItemReader();
-        reader.setFetchSize(appProps.getFetchSize());
-        reader.setDataSource(partnerBillingDs);
-        reader.setRowMapper(new CdrMapper());
-        reader.setSql(SqlConst.FILE_OUT_CDR_RECORDS_SELECT);
-        reader.setPreparedStatementSetter((ps) -> {});
-
-        return reader;
+        return new JdbcCursorItemReaderBuilder()
+            .name("fileout-reader")
+            .fetchSize(appProps.getFetchSize())
+            .dataSource(partnerBillingDs)
+            .rowMapper(new CdrMapper())
+            .sql(SqlConst.FILE_OUT_CDR_RECORDS_SELECT)
+            .preparedStatementSetter((ps) -> {})
+            .build();
     }
 
     @Bean
@@ -110,11 +112,11 @@ public class PartnerBillingConfig {
         lineAgg.setDelimiter(",");
         lineAgg.setFieldExtractor(new CdrFieldExtractor());
 
-        final FlatFileItemWriter<Cdr> writer = new FlatFileItemWriter<>();
-        writer.setEncoding(StandardCharsets.UTF_8.name());
-        writer.setLineAggregator(lineAgg);
-
-        return writer;
+        return new FlatFileItemWriterBuilder()
+            .name("fileout-writer")
+            .encoding(StandardCharsets.UTF_8.name())
+            .lineAggregator(lineAgg)
+            .build();
     }
 
     @Bean
