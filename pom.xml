@@ -13,7 +13,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.boot.version>2.6.7</spring.boot.version>
+        <spring.boot.version>2.7.3</spring.boot.version>
     </properties>
     
     <modules>
@@ -33,6 +33,13 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>1.17.3</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     
@@ -46,12 +53,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M6</version>
+                <version>3.0.0-M7</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.0.0-M6</version>
+                <version>3.0.0-M7</version>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -69,7 +76,7 @@
                             <version>17</version>
                         </requireJavaVersion>
                         <requireMavenVersion>
-                            <version>[3.8.3,)</version>
+                            <version>[3.8.6,)</version>
                         </requireMavenVersion>
                     </rules>
                 </configuration>
@@ -107,7 +114,7 @@
                     <plugin>
                         <groupId>org.owasp</groupId>
                         <artifactId>dependency-check-maven</artifactId>
-                        <version>7.1.0</version>
+                        <version>7.1.1</version>
                         <configuration>
                             <failBuildOnCVSS>6</failBuildOnCVSS>
                             <detail>true</detail>
