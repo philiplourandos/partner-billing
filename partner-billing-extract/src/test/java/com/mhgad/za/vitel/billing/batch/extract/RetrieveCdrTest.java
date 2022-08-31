@@ -1,5 +1,10 @@
 package com.mhgad.za.vitel.billing.batch.extract;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.mhgad.za.vitel.billing.batch.extract.model.Cdr;
 import com.mhgad.za.vitel.billing.batch.common.repo.TestRepo;
 import com.mhgad.za.vitel.billing.batch.extract.tasklet.DatasourceSupplierTasklet;
@@ -21,19 +26,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.DigestUtils;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.testcontainers.containers.MariaDBContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles({"test"})
+@Testcontainers
 public class RetrieveCdrTest {
     private static final Logger LOG = LogManager.getLogger(RetrieveCdrTest.class);
+
+    @Container
+    private static final MariaDBContainer DB = new MariaDBContainer("mariadb:10.9.2");
 
     private static final int EXPECTED_INITIAL_DATASOURCE_COUNT = 3;
     private static final Integer EXPECTED_ROW_COUNT = 60;
@@ -117,5 +126,12 @@ public class RetrieveCdrTest {
 
         final JobExecution jobRun = launcher.run(retrieveCdrsJob, paramBuilder.toJobParameters());
         assertEquals(BatchStatus.FAILED, jobRun.getStatus());
+    }
+
+    @DynamicPropertySource
+    public static void register(final DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", DB::getJdbcUrl);
+        registry.add("spring.datasource.username", DB::getUsername);
+        registry.add("spring.datasource.password", DB::getPassword);
     }
 }

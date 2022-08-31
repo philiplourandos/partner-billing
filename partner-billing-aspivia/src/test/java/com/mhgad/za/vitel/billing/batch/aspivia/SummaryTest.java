@@ -27,14 +27,23 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.MariaDBContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles({"test"})
+@Testcontainers
 public class SummaryTest {
 
     private static final String OUT_FILE_NAME = "summary-cpt.csv";
 
+    @Container
+    private static final MariaDBContainer DB = new MariaDBContainer("mariadb:10.9.2");
+    
     private final ClassPathResource aspiviaCostedBilling = new ClassPathResource("aspivia-costed-billing.csv");
     private final ClassPathResource summaryDataFile = new ClassPathResource("summary-calc-test.csv");
 
@@ -139,5 +148,12 @@ public class SummaryTest {
         summaryTasklet.calculateTotals(inputData);
 
         expectedValues.stream().forEach(e -> assertTrue(expectedValues.contains(e)));
+    }
+
+    @DynamicPropertySource
+    public static void register(final DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", DB::getJdbcUrl);
+        registry.add("spring.datasource.username", DB::getUsername);
+        registry.add("spring.datasource.password", DB::getPassword);
     }
 }
