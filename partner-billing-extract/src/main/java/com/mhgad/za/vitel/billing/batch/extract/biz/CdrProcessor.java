@@ -33,7 +33,7 @@ public class CdrProcessor implements ItemProcessor<Cdr, Cdr> {
         }
 
         // Set unique id
-        if (StringUtils.isEmpty(item.getUniqueid())) {
+        if (StringUtils.hasLength(item.getUniqueid())) {
             final StringBuilder uuidGen = new StringBuilder(50);
             uuidGen.append(item.getCallDate().getTime());
             uuidGen.append('.');
